@@ -1,0 +1,20 @@
+services:
+  vault:
+    build: .
+    container_name: documents-vault
+    restart: unless-stopped
+    ports:
+      # Para hospedagem remota atrás de Caddy/Nginx, altere para "127.0.0.1:3000:3000"
+      - "127.0.0.1:3000:3000"
+    environment:
+      - PORT=3000
+      - DATA_DIR=/data
+      # 1 GB padrão por usuário (em bytes); editável por usuário no painel Admin
+      - DEFAULT_QUOTA_BYTES=1073741824
+      # 100 MB máximo por arquivo individual
+      - MAX_FILE_SIZE_BYTES=104857600
+      # Ative COOKIE_SECURE=true ao publicar em HTTPS remoto
+      - COOKIE_SECURE=false
+      - SESSION_TTL_HOURS=24
+    volumes:
+      - ./data:/data
