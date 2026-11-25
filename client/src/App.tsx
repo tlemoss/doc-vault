@@ -20,7 +20,6 @@ export function App() {
   const [defaultQuotaBytes, setDefaultQuotaBytes] = useState(1024 * 1024 * 1024);
 
   const [user, setUser] = useState<CurrentUser | null>(null);
-  // Private key stays STRICTLY in React state (RAM only — never persisted to localStorage!)
   const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
 
   const [tabs, setTabs] = useState<DecryptedTab[]>([]);
@@ -95,7 +94,6 @@ export function App() {
     [notify]
   );
 
-  // Auto-lock after 15 min of inactivity when unlocked
   useEffect(() => {
     if (!privateKey) return;
     let timer = window.setTimeout(() => {
@@ -196,8 +194,8 @@ export function App() {
 
   if (booting) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 text-sm gap-2">
-        <ShieldCheck className="h-5 w-5 text-emerald-400 animate-pulse" />
+      <div className="min-h-screen bg-vault-canvas flex items-center justify-center text-vault-muted text-sm gap-2">
+        <ShieldCheck className="h-5 w-5 text-vault-emerald animate-pulse" />
         Inicializando ambiente Zero-Knowledge...
       </div>
     );
@@ -217,8 +215,8 @@ export function App() {
           <div
             className={`fixed bottom-5 right-5 z-50 rounded-xl border px-4 py-2.5 text-xs font-medium shadow-xl ${
               toast.tone === 'err'
-                ? 'border-rose-500/40 bg-rose-950/90 text-rose-200'
-                : 'border-emerald-500/40 bg-slate-900/95 text-emerald-200'
+                ? 'border-vault-danger/45 bg-vault-deep text-vault-danger'
+                : 'border-vault-emerald/40 bg-vault-surface text-vault-ivory'
             }`}
           >
             {toast.msg}
@@ -229,7 +227,7 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex overflow-hidden">
+    <div className="min-h-screen bg-vault-canvas text-vault-body flex overflow-hidden">
       <Sidebar
         user={user}
         tabs={tabs}
@@ -274,19 +272,23 @@ export function App() {
       ) : (
         <main className="flex-1 flex items-center justify-center p-8">
           <div className="max-w-md text-center space-y-4">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-vault-emerald/14 border border-vault-emerald/30 text-vault-emerald">
               <FolderLock className="h-7 w-7" />
             </div>
-            <h2 className="text-xl font-bold text-slate-100">Seu Cofre Está Pronto</h2>
-            <p className="text-sm text-slate-400 leading-relaxed">
-              Crie sua primeira aba para guardar <strong>documentos pessoais criptografados</strong>{' '}
-              (PDFs, recibos, notas) ou montar <strong>tabelas estruturadas</strong> (controle
+            <h2 className="text-xl font-semibold text-vault-ivory tracking-tight">
+              Seu Cofre Está Pronto
+            </h2>
+            <p className="text-sm text-vault-muted leading-relaxed">
+              Crie sua primeira aba para guardar{' '}
+              <strong className="text-vault-ivory">documentos pessoais criptografados</strong>{' '}
+              (PDFs, recibos, notas) ou montar{' '}
+              <strong className="text-vault-ivory">tabelas estruturadas</strong> (controle
               financeiro, contas e investimentos).
             </p>
             <button
               type="button"
               onClick={() => setShowCreateTab(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 transition cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-xl bg-vault-ivory px-5 py-2.5 text-sm font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
             >
               <Plus className="h-4 w-4" />
               Criar Primeira Aba
@@ -339,8 +341,8 @@ export function App() {
         <div
           className={`fixed bottom-5 right-5 z-50 rounded-xl border px-4 py-2.5 text-xs font-medium shadow-xl ${
             toast.tone === 'err'
-              ? 'border-rose-500/40 bg-rose-950/90 text-rose-200'
-              : 'border-emerald-500/40 bg-slate-900/95 text-emerald-200'
+              ? 'border-vault-danger/45 bg-vault-deep text-vault-danger'
+              : 'border-vault-emerald/40 bg-vault-surface text-vault-ivory'
           }`}
         >
           {toast.msg}

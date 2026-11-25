@@ -175,16 +175,16 @@ export function ShareModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-      <div className="w-full max-w-xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+      <div className="w-full max-w-xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
-            <Shield className="h-5 w-5 text-emerald-400" />
+            <Shield className="h-5 w-5 text-vault-emerald" />
             <div>
-              <h2 className="text-base font-semibold text-slate-100">
+              <h2 className="text-base font-semibold text-vault-ivory">
                 Controle de Acesso — {tab.meta.title}
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-vault-muted">
                 Chave AES-256-GCM (versão v{tab.keyVersion}) compartilhada via RSA-OAEP
               </p>
             </div>
@@ -192,19 +192,19 @@ export function ShareModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 cursor-pointer"
+            className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {suggestRotate && isOwner && (
-          <div className="mb-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3.5 text-xs text-amber-200 space-y-2">
-            <div className="flex items-center gap-2 font-semibold">
-              <AlertTriangle className="h-4 w-4 text-amber-400" />
+          <div className="mb-4 rounded-xl border border-vault-warning/40 bg-vault-warning/10 p-3.5 text-xs text-vault-ivory space-y-2">
+            <div className="flex items-center gap-2 font-semibold text-vault-warning">
+              <AlertTriangle className="h-4 w-4" />
               Recomendado: Rotacionar a chave criptográfica da aba
             </div>
-            <p className="text-amber-100/80">
+            <p className="text-vault-body">
               Para garantir sigilo futuro absoluto após revogar um usuário, gere uma nova chave
               AES-256 e re-empacote automaticamente os dados desta aba para os membros restantes.
             </p>
@@ -212,7 +212,7 @@ export function ShareModal({
               type="button"
               disabled={rotating}
               onClick={handleRotateKey}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-slate-950 hover:bg-amber-400 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-vault-warning px-3 py-1.5 text-xs font-semibold text-vault-deep hover:opacity-90 cursor-pointer"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${rotating ? 'animate-spin' : ''}`} />
               {rotating ? 'Rotacionando chave...' : 'Rotacionar Chave Agora'}
@@ -220,19 +220,18 @@ export function ShareModal({
           </div>
         )}
 
-        {/* Add member form */}
         {isOwner && (
           <form
             onSubmit={handleGrant}
-            className="mb-5 rounded-xl border border-slate-800 bg-slate-950/60 p-3.5 space-y-3"
+            className="mb-5 rounded-xl border border-vault-stone/18 bg-vault-deep/80 p-3.5 space-y-3"
           >
-            <div className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-              <UserPlus className="h-3.5 w-3.5 text-emerald-400" />
+            <div className="text-xs font-medium text-vault-stone flex items-center gap-1.5">
+              <UserPlus className="h-3.5 w-3.5 text-vault-emerald" />
               Conceder acesso a outro usuário
             </div>
 
             {availableUsers.length === 0 ? (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-vault-muted">
                 Todos os usuários ativos já possuem acesso (ou crie novos usuários via convite no
                 painel de Administração).
               </p>
@@ -242,7 +241,7 @@ export function ShareModal({
                   value={selectedUserId}
                   onChange={(e) => setSelectedUserId(e.target.value)}
                   required
-                  className="flex-1 min-w-[160px] rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                  className="flex-1 min-w-[160px] rounded-xl border border-vault-stone/22 bg-vault-canvas px-3 py-2 text-xs text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                 >
                   <option value="">Selecione um usuário...</option>
                   {availableUsers.map((u) => (
@@ -254,7 +253,7 @@ export function ShareModal({
                 <select
                   value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value as TabRole)}
-                  className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs text-slate-100"
+                  className="rounded-xl border border-vault-stone/22 bg-vault-canvas px-3 py-2 text-xs text-vault-ivory"
                 >
                   <option value="viewer">Leitor</option>
                   <option value="editor">Editor</option>
@@ -263,7 +262,7 @@ export function ShareModal({
                 <button
                   type="submit"
                   disabled={busy || !selectedUserId}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 cursor-pointer"
+                  className="rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 cursor-pointer"
                 >
                   Compartilhar
                 </button>
@@ -272,31 +271,30 @@ export function ShareModal({
           </form>
         )}
 
-        {/* Current Members */}
         <div className="space-y-2 mb-5">
-          <div className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+          <div className="text-[10px] font-semibold text-vault-muted uppercase tracking-[0.14em]">
             Usuários com acesso ({members.length})
           </div>
 
           {loading ? (
-            <div className="py-6 text-center text-xs text-slate-500">Carregando...</div>
+            <div className="py-6 text-center text-xs text-vault-muted">Carregando...</div>
           ) : (
             members.map((m) => (
               <div
                 key={m.userId}
-                className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/50 px-3.5 py-2.5"
+                className="flex items-center justify-between gap-3 rounded-xl border border-vault-stone/16 bg-vault-deep/60 px-3.5 py-2.5"
               >
                 <div className="min-w-0">
-                  <div className="text-sm font-medium text-slate-100 flex items-center gap-2">
+                  <div className="text-sm font-medium text-vault-ivory flex items-center gap-2">
                     {m.username}
                     {m.userId === currentUserId && (
-                      <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
+                      <span className="rounded bg-vault-stone/12 px-1.5 py-0.5 text-[10px] text-vault-stone">
                         você
                       </span>
                     )}
                   </div>
                   <div
-                    className="text-[10px] font-mono text-slate-500 truncate"
+                    className="text-[10px] font-mono text-vault-muted truncate"
                     title={`Fingerprint da chave pública: ${m.publicKeyFingerprint}`}
                   >
                     Chave: {m.publicKeyFingerprint}
@@ -312,7 +310,7 @@ export function ShareModal({
                         onChange={(e) =>
                           handleChangeRole(m, e.target.value as TabRole)
                         }
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-slate-200"
+                        className="rounded-lg border border-vault-stone/22 bg-vault-canvas px-2.5 py-1 text-xs text-vault-ivory"
                       >
                         <option value="viewer">Leitor</option>
                         <option value="editor">Editor</option>
@@ -323,13 +321,13 @@ export function ShareModal({
                         disabled={busy}
                         onClick={() => handleRevoke(m)}
                         title="Revogar acesso"
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 cursor-pointer"
+                        className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-danger/12 hover:text-vault-danger cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </>
                   ) : (
-                    <span className="rounded-lg bg-slate-800 px-2.5 py-1 text-xs text-slate-300">
+                    <span className="rounded-lg border border-vault-stone/18 bg-vault-canvas px-2.5 py-1 text-xs text-vault-stone">
                       {ROLE_LABELS[m.role]}
                     </span>
                   )}
@@ -339,18 +337,17 @@ export function ShareModal({
           )}
         </div>
 
-        {/* Manual key rotation footer */}
         {isOwner && (
-          <div className="pt-4 border-t border-slate-800 flex items-center justify-between gap-3">
-            <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
-              <KeyRound className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+          <div className="pt-4 border-t border-vault-stone/14 flex items-center justify-between gap-3">
+            <div className="text-[11px] text-vault-muted flex items-center gap-1.5">
+              <KeyRound className="h-3.5 w-3.5 text-vault-emerald shrink-0" />
               <span>Re-criptografa metadados, notas, linhas e chaves de arquivo sob nova Tab Key.</span>
             </div>
             <button
               type="button"
               disabled={rotating}
               onClick={handleRotateKey}
-              className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700 disabled:opacity-50 cursor-pointer"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/25 bg-vault-canvas px-3 py-1.5 text-xs font-medium text-vault-stone hover:bg-vault-hover disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${rotating ? 'animate-spin' : ''}`} />
               {rotating ? 'Rotacionando...' : 'Rotacionar Chave'}

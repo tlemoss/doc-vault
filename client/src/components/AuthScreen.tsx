@@ -53,14 +53,12 @@ export function AuthScreen({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Invite verification state
   const [inviteInfo, setInviteInfo] = useState<{
     username: string | null;
     role: string;
     quotaBytes: number;
   } | null>(null);
 
-  // One-time recovery key display after registration/setup
   const [pendingRecovery, setPendingRecovery] = useState<{
     recoveryKey: string;
     user: CurrentUser;
@@ -132,7 +130,6 @@ export function AuthScreen({
               inviteToken: inviteToken!,
             });
 
-      // Clear ?invite= from URL if present
       if (inviteToken) {
         window.history.replaceState({}, '', window.location.pathname);
       }
@@ -283,30 +280,30 @@ export function AuthScreen({
     URL.revokeObjectURL(url);
   }
 
-  // Recovery Key confirmation step right after account creation
   if (pendingRecovery) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-        <div className="w-full max-w-lg rounded-2xl border border-amber-500/30 bg-slate-900/90 p-7 shadow-2xl">
-          <div className="flex items-center gap-3 text-amber-400 mb-4">
+      <div className="min-h-screen flex items-center justify-center bg-vault-canvas p-4">
+        <div className="w-full max-w-lg rounded-2xl border border-vault-warning/40 bg-vault-surface p-7 shadow-2xl">
+          <div className="flex items-center gap-3 text-vault-warning mb-4">
             <AlertTriangle className="h-7 w-7 shrink-0" />
             <div>
-              <h1 className="text-xl font-semibold text-slate-100">
+              <h1 className="text-xl font-semibold text-vault-ivory tracking-tight">
                 Salve sua Chave de Recuperação
               </h1>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-vault-muted">
                 Ela é exibida uma única vez e nunca é enviada ao servidor.
               </p>
             </div>
           </div>
 
-          <p className="text-sm text-slate-300 leading-relaxed mb-4">
-            Como esta plataforma é <strong className="text-emerald-400">Zero-Knowledge</strong>,
-            ninguém (nem o administrador nem o host) consegue recuperar sua senha mestre caso você
-            a esqueça. Guarde a chave abaixo em um local seguro offline:
+          <p className="text-sm text-vault-body leading-relaxed mb-4">
+            Como esta plataforma é{' '}
+            <strong className="text-vault-emerald">Zero-Knowledge</strong>, ninguém (nem o
+            administrador nem o host) consegue recuperar sua senha mestre caso você a esqueça.
+            Guarde a chave abaixo em um local seguro offline:
           </p>
 
-          <div className="rounded-xl border border-slate-700 bg-slate-950 p-4 font-mono text-sm text-emerald-300 break-all tracking-wider select-all mb-4">
+          <div className="rounded-xl border border-vault-stone/25 bg-vault-deep p-4 font-mono text-sm text-vault-ivory break-all tracking-wider select-all mb-4">
             {pendingRecovery.recoveryKey}
           </div>
 
@@ -318,11 +315,11 @@ export function AuthScreen({
                 setCopiedRecovery(true);
                 setTimeout(() => setCopiedRecovery(false), 2000);
               }}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700 transition cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-vault-stone/25 bg-vault-canvas px-3 py-2 text-sm font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
             >
               {copiedRecovery ? (
                 <>
-                  <Check className="h-4 w-4 text-emerald-400" />
+                  <Check className="h-4 w-4 text-vault-emerald" />
                   Copiada!
                 </>
               ) : (
@@ -335,19 +332,19 @@ export function AuthScreen({
             <button
               type="button"
               onClick={downloadRecoveryFile}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-200 hover:bg-slate-700 transition cursor-pointer"
+              className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl border border-vault-stone/25 bg-vault-canvas px-3 py-2 text-sm font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
             >
               <Download className="h-4 w-4" />
               Baixar .txt
             </button>
           </div>
 
-          <label className="flex items-start gap-3 text-sm text-slate-300 mb-5 cursor-pointer">
+          <label className="flex items-start gap-3 text-sm text-vault-body mb-5 cursor-pointer">
             <input
               type="checkbox"
               checked={confirmedRecovery}
               onChange={(e) => setConfirmedRecovery(e.target.checked)}
-              className="mt-1 rounded border-slate-600 bg-slate-800 text-emerald-500 focus:ring-emerald-500"
+              className="mt-1 rounded border-vault-stone/30 bg-vault-deep accent-vault-emerald"
             />
             <span>
               Confirmo que salvei minha chave de recuperação em local seguro e entendo que ela é a
@@ -361,7 +358,7 @@ export function AuthScreen({
             onClick={() =>
               onAuthenticated(pendingRecovery.user, pendingRecovery.privateKey)
             }
-            className="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer"
+            className="w-full rounded-xl bg-vault-ivory px-4 py-2.5 text-sm font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-40 disabled:cursor-not-allowed transition cursor-pointer"
           >
             Entrar no Cofre Criptografado
           </button>
@@ -371,50 +368,60 @@ export function AuthScreen({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-7 shadow-2xl">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+    <div className="min-h-screen flex items-center justify-center bg-vault-canvas p-4">
+      <div className="w-full max-w-md rounded-2xl border border-vault-stone/25 bg-vault-surface p-7 shadow-2xl">
+        <div className="flex items-center gap-3.5 mb-6">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-vault-emerald/15 border border-vault-emerald/35 text-vault-emerald">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-100">Documents Vault</h1>
-            <p className="text-xs text-emerald-400/90">
+            <h1 className="text-xl font-semibold text-vault-ivory tracking-tight">
+              Documents Vault
+            </h1>
+            <p className="text-xs text-vault-emerald">
               Criptografia Zero-Knowledge no Navegador
             </p>
           </div>
         </div>
 
         {mode === 'setup' && (
-          <div className="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-emerald-200 leading-relaxed">
-            <strong>Configuração Inicial:</strong> Crie a primeira conta de{' '}
-            <strong>Administrador</strong>. Suas chaves criptográficas serão geradas localmente no
-            seu navegador — o host nunca terá acesso à sua senha nem aos seus dados.
+          <div className="mb-5 rounded-xl border border-vault-stone/20 bg-vault-deep/80 p-3.5 text-xs text-vault-body leading-relaxed">
+            <strong className="text-vault-ivory">Configuração Inicial:</strong> Crie a primeira
+            conta de <strong className="text-vault-ivory">Administrador</strong>. Suas chaves
+            criptográficas serão geradas localmente no navegador — o host nunca terá acesso à sua
+            senha nem aos seus dados.
           </div>
         )}
 
         {mode === 'invite' && inviteInfo && (
-          <div className="mb-5 rounded-xl border border-sky-500/25 bg-sky-500/10 p-3.5 text-xs text-sky-200 space-y-1">
-            <div className="font-semibold flex items-center gap-1.5">
+          <div className="mb-5 rounded-xl border border-vault-emerald/30 bg-vault-emerald/10 p-3.5 text-xs text-vault-ivory space-y-1">
+            <div className="font-semibold flex items-center gap-1.5 text-vault-emerald">
               <UserPlus className="h-4 w-4" />
               Convite válido para criar sua conta
             </div>
-            <div>
-              Perfil: <strong>{inviteInfo.role === 'admin' ? 'Administrador' : 'Usuário'}</strong> ·
-              Espaço: <strong>{formatBytes(inviteInfo.quotaBytes)}</strong>
+            <div className="text-vault-body">
+              Perfil:{' '}
+              <strong className="text-vault-ivory">
+                {inviteInfo.role === 'admin' ? 'Administrador' : 'Usuário'}
+              </strong>{' '}
+              · Espaço:{' '}
+              <strong className="text-vault-ivory tabular-nums">
+                {formatBytes(inviteInfo.quotaBytes)}
+              </strong>
             </div>
           </div>
         )}
 
         {mode === 'unlock' && lockedUser && (
-          <div className="mb-5 rounded-xl border border-slate-700 bg-slate-800/60 p-3.5 text-xs text-slate-300">
-            Sessão ativa como <strong className="text-slate-100">{lockedUser.username}</strong>.
-            Digite sua senha mestre para descriptografar suas chaves localmente na memória.
+          <div className="mb-5 rounded-xl border border-vault-stone/20 bg-vault-deep/80 p-3.5 text-xs text-vault-body">
+            Sessão ativa como{' '}
+            <strong className="text-vault-ivory">{lockedUser.username}</strong>. Digite sua senha
+            mestre para descriptografar suas chaves localmente na memória.
           </div>
         )}
 
         {error && (
-          <div className="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2.5 text-xs text-rose-200">
+          <div className="mb-4 rounded-xl border border-vault-danger/40 bg-vault-danger/10 px-3.5 py-2.5 text-xs text-vault-danger">
             {error}
           </div>
         )}
@@ -433,7 +440,7 @@ export function AuthScreen({
         >
           {mode !== 'unlock' && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-vault-stone mb-1.5">
                 Nome de usuário
               </label>
               <input
@@ -444,14 +451,14 @@ export function AuthScreen({
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="ex: thiago"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+                className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2.5 text-sm text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none disabled:opacity-60 transition"
               />
             </div>
           )}
 
           {mode === 'recovery' && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-vault-stone mb-1.5">
                 Chave de Recuperação (64 caracteres hex)
               </label>
               <textarea
@@ -460,13 +467,13 @@ export function AuthScreen({
                 value={recoveryKeyInput}
                 onChange={(e) => setRecoveryKeyInput(e.target.value)}
                 placeholder="XXXXXXXX-XXXXXXXX-XXXXXXXX-..."
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 font-mono text-xs text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2.5 font-mono text-xs text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none transition"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-vault-stone mb-1.5">
               {mode === 'recovery' ? 'Nova Senha Mestre' : 'Senha Mestre'}
             </label>
             <input
@@ -484,13 +491,13 @@ export function AuthScreen({
                   ? 'Mínimo 10 caracteres fortes'
                   : 'Digite sua senha mestre'
               }
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2.5 text-sm text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none transition"
             />
           </div>
 
           {(mode === 'setup' || mode === 'invite' || mode === 'recovery') && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-vault-stone mb-1.5">
                 Confirmar Senha Mestre
               </label>
               <input
@@ -500,7 +507,7 @@ export function AuthScreen({
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Repita a senha mestre"
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2.5 text-sm text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none transition"
               />
             </div>
           )}
@@ -508,7 +515,7 @@ export function AuthScreen({
           <button
             type="submit"
             disabled={busy || (mode === 'invite' && !inviteInfo)}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 transition cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-vault-ivory px-4 py-2.5 text-sm font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 transition cursor-pointer"
           >
             <Lock className="h-4 w-4" />
             {busy
@@ -525,7 +532,7 @@ export function AuthScreen({
           </button>
         </form>
 
-        <div className="mt-5 pt-4 border-t border-slate-800 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-5 pt-4 border-t border-vault-stone/15 flex items-center justify-between text-xs text-vault-muted">
           {mode === 'login' && (
             <button
               type="button"
@@ -533,7 +540,7 @@ export function AuthScreen({
                 setError(null);
                 setMode('recovery');
               }}
-              className="inline-flex items-center gap-1.5 text-slate-400 hover:text-emerald-400 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-vault-muted hover:text-vault-ivory transition cursor-pointer"
             >
               <KeyRound className="h-3.5 w-3.5" />
               Esqueci a senha (usar chave de recuperação)
@@ -546,7 +553,7 @@ export function AuthScreen({
                 setError(null);
                 setMode('login');
               }}
-              className="text-slate-400 hover:text-emerald-400 transition cursor-pointer"
+              className="text-vault-muted hover:text-vault-ivory transition cursor-pointer"
             >
               ← Voltar para o login
             </button>
@@ -555,7 +562,7 @@ export function AuthScreen({
             <button
               type="button"
               onClick={onLogout}
-              className="inline-flex items-center gap-1.5 text-slate-400 hover:text-rose-400 transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-vault-muted hover:text-vault-danger transition cursor-pointer"
             >
               <LogOut className="h-3.5 w-3.5" />
               Encerrar sessão / trocar usuário
@@ -568,7 +575,7 @@ export function AuthScreen({
                 setError(null);
                 setMode('login');
               }}
-              className="text-slate-400 hover:text-emerald-400 transition cursor-pointer"
+              className="text-vault-muted hover:text-vault-ivory transition cursor-pointer"
             >
               Já tenho conta — fazer login
             </button>

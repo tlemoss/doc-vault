@@ -71,14 +71,12 @@ export function TableTab({
   const [sortBy, setSortBy] = useState<{ colId: string; dir: 'asc' | 'desc' } | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  // Inline row editor modal (for adding or editing a row comfortably)
   const [rowModal, setRowModal] = useState<{
     id: string | null;
     values: Record<string, CellValue>;
   } | null>(null);
   const [savingRow, setSavingRow] = useState(false);
 
-  // Column schema editor modal
   const [schemaModal, setSchemaModal] = useState<TableColumn[] | null>(null);
   const [savingSchema, setSavingSchema] = useState(false);
 
@@ -283,7 +281,6 @@ export function TableTab({
     });
   }, [rows, search, columnFilters, sortBy, schema.columns]);
 
-  // Compute live summaries for numeric / currency columns
   const numericSummaries = useMemo(() => {
     const numCols = schema.columns.filter(
       (c) => c.type === 'currency' || c.type === 'number'
@@ -339,24 +336,26 @@ export function TableTab({
   );
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden">
+    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-vault-canvas">
       {/* Header */}
-      <header className="px-6 py-4 border-b border-slate-800 bg-slate-900/50 flex flex-wrap items-center justify-between gap-4">
+      <header className="px-6 py-4 border-b border-vault-stone/16 bg-vault-canvas flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-bold text-slate-100 truncate">{tab.meta.title}</h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[11px] font-medium text-emerald-300">
+            <h1 className="text-xl font-semibold text-vault-ivory tracking-tight truncate">
+              {tab.meta.title}
+            </h1>
+            <span className="inline-flex items-center gap-1 rounded-full bg-vault-emerald/14 border border-vault-emerald/35 px-2.5 py-0.5 text-[11px] font-medium text-vault-emerald tabular-nums">
               <Lock className="h-3 w-3" />
               AES-256 · v{tab.keyVersion}
             </span>
             {tab.role === 'viewer' && (
-              <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] text-slate-400">
+              <span className="rounded-full border border-vault-stone/20 bg-vault-surface px-2.5 py-0.5 text-[11px] text-vault-muted">
                 Somente leitura
               </span>
             )}
           </div>
           {tab.meta.description && (
-            <p className="text-xs text-slate-400 mt-0.5 truncate">{tab.meta.description}</p>
+            <p className="text-xs text-vault-muted mt-0.5 truncate">{tab.meta.description}</p>
           )}
         </div>
 
@@ -366,7 +365,7 @@ export function TableTab({
               <button
                 type="button"
                 onClick={openNewRow}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-500 transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-vault-ivory px-3.5 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 Novo Registro
@@ -374,9 +373,11 @@ export function TableTab({
               <button
                 type="button"
                 onClick={() =>
-                  setSchemaModal(schema.columns.map((c) => ({ ...c, options: [...(c.options ?? [])] })))
+                  setSchemaModal(
+                    schema.columns.map((c) => ({ ...c, options: [...(c.options ?? [])] }))
+                  )
                 }
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-xs font-medium text-slate-100 hover:bg-slate-700 transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
               >
                 <Columns3 className="h-4 w-4" />
                 Colunas
@@ -386,7 +387,7 @@ export function TableTab({
           <button
             type="button"
             onClick={exportCsv}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-800 transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
           >
             <Download className="h-4 w-4" />
             CSV
@@ -394,7 +395,7 @@ export function TableTab({
           <button
             type="button"
             onClick={onOpenShare}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-800 transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer tabular-nums"
           >
             <Share2 className="h-4 w-4" />
             Acesso ({tab.memberCount})
@@ -404,7 +405,7 @@ export function TableTab({
               type="button"
               onClick={onDeleteTab}
               title="Excluir aba"
-              className="rounded-xl border border-slate-800 p-2 text-slate-400 hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-400 transition cursor-pointer"
+              className="rounded-xl border border-vault-stone/18 bg-vault-surface p-2 text-vault-muted hover:border-vault-danger/45 hover:bg-vault-danger/10 hover:text-vault-danger transition cursor-pointer"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -413,13 +414,15 @@ export function TableTab({
       </header>
 
       {/* Live Numeric/Financial Summary Bar */}
-      <div className="px-6 py-3 border-b border-slate-800/70 bg-slate-900/30 flex flex-wrap items-center gap-3">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2">
-          <div className="text-[10px] uppercase tracking-wider text-slate-500">Registros</div>
-          <div className="text-sm font-bold text-slate-100">
+      <div className="px-6 py-3.5 border-b border-vault-stone/14 bg-vault-canvas flex flex-wrap items-center gap-3">
+        <div className="rounded-xl border border-vault-stone/16 bg-vault-surface px-4 py-2.5">
+          <div className="text-[10px] uppercase tracking-[0.14em] text-vault-muted">
+            Registros
+          </div>
+          <div className="text-sm font-semibold text-vault-ivory tabular-nums mt-0.5">
             {filteredAndSortedRows.length}
             {filteredAndSortedRows.length !== rows.length && (
-              <span className="text-xs font-normal text-slate-500"> / {rows.length}</span>
+              <span className="text-xs font-normal text-vault-muted"> / {rows.length}</span>
             )}
           </div>
         </div>
@@ -427,22 +430,22 @@ export function TableTab({
         {numericSummaries.map(({ col, sum, avg }) => (
           <div
             key={col.id}
-            className="rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2"
+            className="rounded-xl border border-vault-stone/16 bg-vault-surface px-4 py-2.5"
           >
-            <div className="text-[10px] uppercase tracking-wider text-slate-500">
+            <div className="text-[10px] uppercase tracking-[0.14em] text-vault-muted">
               Total · {col.name}
             </div>
-            <div className="flex items-baseline gap-2">
+            <div className="flex items-baseline gap-2.5 mt-0.5">
               <span
-                className={`text-sm font-bold ${
-                  sum < 0 ? 'text-rose-400' : 'text-emerald-400'
+                className={`text-sm font-semibold tabular-nums ${
+                  sum < 0 ? 'text-vault-danger' : 'text-vault-ivory'
                 }`}
               >
                 {col.type === 'currency'
                   ? formatCurrency(sum, col.currency)
                   : sum.toLocaleString('pt-BR')}
               </span>
-              <span className="text-[11px] text-slate-500">
+              <span className="text-[11px] text-vault-muted tabular-nums">
                 média:{' '}
                 {col.type === 'currency'
                   ? formatCurrency(avg, col.currency)
@@ -454,15 +457,15 @@ export function TableTab({
       </div>
 
       {/* Search & Column Filters */}
-      <div className="px-6 py-3 border-b border-slate-800/70 bg-slate-950/40 flex flex-wrap items-center gap-2.5">
+      <div className="px-6 py-3 border-b border-vault-stone/14 bg-vault-deep/45 flex flex-wrap items-center gap-2.5">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="h-4 w-4 text-vault-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Filtrar linhas localmente..."
-            className="w-full rounded-xl border border-slate-800 bg-slate-900 pl-9 pr-3 py-1.5 text-xs text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+            className="w-full rounded-xl border border-vault-stone/20 bg-vault-deep pl-9 pr-3 py-1.5 text-xs text-vault-ivory placeholder-vault-muted/75 focus:border-vault-stone/50 focus:outline-none"
           />
         </div>
 
@@ -473,7 +476,7 @@ export function TableTab({
             onChange={(e) =>
               setColumnFilters((prev) => ({ ...prev, [col.id]: e.target.value }))
             }
-            className="rounded-xl border border-slate-800 bg-slate-900 px-3 py-1.5 text-xs text-slate-200 focus:border-emerald-500 focus:outline-none"
+            className="rounded-xl border border-vault-stone/20 bg-vault-deep px-3 py-1.5 text-xs text-vault-stone focus:border-vault-stone/50 focus:outline-none"
           >
             <option value="">{col.name}: Todos</option>
             {col.type === 'checkbox' ? (
@@ -495,7 +498,7 @@ export function TableTab({
           <button
             type="button"
             onClick={handleBatchDelete}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-xs font-medium text-rose-300 hover:bg-rose-500/20 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-danger/45 bg-vault-danger/12 px-3 py-1.5 text-xs font-medium text-vault-danger hover:bg-vault-danger/20 cursor-pointer"
           >
             <Trash2 className="h-3.5 w-3.5" />
             Excluir ({selectedIds.size})
@@ -506,14 +509,14 @@ export function TableTab({
       {/* Data Table */}
       <div className="flex-1 overflow-auto p-6">
         {loading ? (
-          <div className="py-16 text-center text-sm text-slate-400">
+          <div className="py-16 text-center text-sm text-vault-muted">
             Descriptografando registros da tabela...
           </div>
         ) : (
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/50 overflow-x-auto">
+          <div className="rounded-2xl border border-vault-stone/18 bg-vault-surface overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-800 bg-slate-900/90 text-slate-400">
+                <tr className="border-b border-vault-stone/16 bg-vault-deep/65 text-vault-muted">
                   {canEdit && (
                     <th className="w-10 px-3 py-3">
                       <input
@@ -529,7 +532,7 @@ export function TableTab({
                             setSelectedIds(new Set());
                           }
                         }}
-                        className="rounded border-slate-600 bg-slate-800 text-emerald-500"
+                        className="rounded border-vault-stone/30 bg-vault-deep accent-vault-emerald"
                       />
                     </th>
                   )}
@@ -537,32 +540,36 @@ export function TableTab({
                     <th
                       key={col.id}
                       onClick={() => toggleSort(col.id)}
-                      className="px-4 py-3 font-semibold uppercase tracking-wider text-[11px] cursor-pointer hover:text-slate-200 select-none whitespace-nowrap"
+                      className="px-4 py-3 font-medium uppercase tracking-[0.12em] text-[10px] cursor-pointer hover:text-vault-ivory select-none whitespace-nowrap"
                     >
                       <span className="inline-flex items-center gap-1">
                         {col.name}
                         {sortBy?.colId === col.id ? (
                           sortBy.dir === 'asc' ? (
-                            <ArrowUp className="h-3 w-3 text-emerald-400" />
+                            <ArrowUp className="h-3 w-3 text-vault-emerald" />
                           ) : (
-                            <ArrowDown className="h-3 w-3 text-emerald-400" />
+                            <ArrowDown className="h-3 w-3 text-vault-emerald" />
                           )
                         ) : (
-                          <ArrowUpDown className="h-3 w-3 opacity-30" />
+                          <ArrowUpDown className="h-3 w-3 opacity-35" />
                         )}
                       </span>
                     </th>
                   ))}
-                  {canEdit && <th className="w-20 px-3 py-3 text-right">Ações</th>}
+                  {canEdit && (
+                    <th className="w-20 px-3 py-3 text-right font-medium uppercase tracking-[0.12em] text-[10px]">
+                      Ações
+                    </th>
+                  )}
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-slate-800/70">
+              <tbody className="divide-y divide-vault-stone/12">
                 {filteredAndSortedRows.length === 0 ? (
                   <tr>
                     <td
                       colSpan={schema.columns.length + (canEdit ? 2 : 0)}
-                      className="px-6 py-12 text-center text-slate-500"
+                      className="px-6 py-12 text-center text-vault-muted"
                     >
                       {rows.length === 0
                         ? 'Nenhum registro ainda. Clique em "Novo Registro" para lançar dados criptografados.'
@@ -573,10 +580,10 @@ export function TableTab({
                   filteredAndSortedRows.map((row) => (
                     <tr
                       key={row.id}
-                      className="hover:bg-slate-800/40 transition group"
+                      className="hover:bg-vault-hover/75 transition group"
                     >
                       {canEdit && (
-                        <td className="px-3 py-2.5">
+                        <td className="px-3 py-3">
                           <input
                             type="checkbox"
                             checked={selectedIds.has(row.id)}
@@ -588,7 +595,7 @@ export function TableTab({
                                 return next;
                               });
                             }}
-                            className="rounded border-slate-600 bg-slate-800 text-emerald-500"
+                            className="rounded border-vault-stone/30 bg-vault-deep accent-vault-emerald"
                           />
                         </td>
                       )}
@@ -603,7 +610,7 @@ export function TableTab({
                                 setRowModal({ id: row.id, values: { ...row.values } });
                               }
                             }}
-                            className={`px-4 py-2.5 whitespace-nowrap ${
+                            className={`px-4 py-3 whitespace-nowrap ${
                               canEdit && col.type !== 'checkbox' ? 'cursor-pointer' : ''
                             }`}
                           >
@@ -614,39 +621,41 @@ export function TableTab({
                                 onClick={() => handleQuickToggleCheckbox(row, col.id)}
                                 className={`inline-flex h-5 w-5 items-center justify-center rounded-md border transition cursor-pointer ${
                                   val
-                                    ? 'border-emerald-500 bg-emerald-500/20 text-emerald-400'
-                                    : 'border-slate-700 bg-slate-900 text-transparent'
+                                    ? 'border-vault-emerald bg-vault-emerald/20 text-vault-emerald'
+                                    : 'border-vault-stone/25 bg-vault-deep text-transparent'
                                 }`}
                               >
                                 <Check className="h-3.5 w-3.5" />
                               </button>
                             ) : col.type === 'currency' ? (
                               <span
-                                className={`font-mono font-medium ${
-                                  Number(val) < 0 ? 'text-rose-400' : 'text-emerald-300'
+                                className={`font-mono tabular-nums font-medium ${
+                                  Number(val) < 0 ? 'text-vault-danger' : 'text-vault-emerald'
                                 }`}
                               >
                                 {formatCurrency(Number(val) || 0, col.currency)}
                               </span>
                             ) : col.type === 'number' ? (
-                              <span className="font-mono text-slate-200">
+                              <span className="font-mono tabular-nums text-vault-ivory">
                                 {(Number(val) || 0).toLocaleString('pt-BR')}
                               </span>
                             ) : col.type === 'date' ? (
-                              <span className="text-slate-300">
+                              <span className="text-vault-muted tabular-nums">
                                 {formatDate(String(val ?? ''))}
                               </span>
                             ) : col.type === 'select' ? (
                               val ? (
-                                <span className="inline-flex rounded-lg bg-slate-800 border border-slate-700 px-2 py-0.5 text-[11px] text-slate-200">
+                                <span className="inline-flex rounded-lg bg-vault-canvas border border-vault-stone/20 px-2.5 py-0.5 text-[11px] text-vault-stone">
                                   {String(val)}
                                 </span>
                               ) : (
-                                <span className="text-slate-600">—</span>
+                                <span className="text-vault-muted/50">—</span>
                               )
                             ) : (
-                              <span className="text-slate-200">
-                                {String(val ?? '') || <span className="text-slate-600">—</span>}
+                              <span className="text-vault-ivory">
+                                {String(val ?? '') || (
+                                  <span className="text-vault-muted/50">—</span>
+                                )}
                               </span>
                             )}
                           </td>
@@ -654,12 +663,12 @@ export function TableTab({
                       })}
 
                       {canEdit && (
-                        <td className="px-3 py-2.5 text-right whitespace-nowrap">
+                        <td className="px-3 py-3 text-right whitespace-nowrap">
                           <button
                             type="button"
                             onClick={() => handleDeleteRow(row.id)}
                             title="Excluir linha"
-                            className="rounded-lg p-1 text-slate-500 hover:bg-slate-800 hover:text-rose-400 transition cursor-pointer"
+                            className="rounded-lg p-1 text-vault-muted hover:bg-vault-danger/12 hover:text-vault-danger transition cursor-pointer"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -676,16 +685,16 @@ export function TableTab({
 
       {/* Row Create/Edit Modal */}
       {rowModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold text-slate-100">
+              <h2 className="text-base font-semibold text-vault-ivory">
                 {rowModal.id ? 'Editar Registro' : 'Novo Registro Criptografado'}
               </h2>
               <button
                 type="button"
                 onClick={() => setRowModal(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 cursor-pointer"
+                className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -696,16 +705,16 @@ export function TableTab({
                 const val = rowModal.values[col.id];
                 return (
                   <div key={col.id}>
-                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                    <label className="block text-xs font-medium text-vault-stone mb-1">
                       {col.name}{' '}
-                      <span className="text-[10px] text-slate-500">
+                      <span className="text-[10px] text-vault-muted">
                         ({COLUMN_TYPE_LABELS[col.type]}
                         {col.type === 'currency' ? ` ${col.currency ?? 'BRL'}` : ''})
                       </span>
                     </label>
 
                     {col.type === 'checkbox' ? (
-                      <label className="inline-flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                      <label className="inline-flex items-center gap-2 text-xs text-vault-body cursor-pointer">
                         <input
                           type="checkbox"
                           checked={Boolean(val)}
@@ -715,7 +724,7 @@ export function TableTab({
                               values: { ...rowModal.values, [col.id]: e.target.checked },
                             })
                           }
-                          className="rounded border-slate-600 bg-slate-800 text-emerald-500"
+                          className="rounded border-vault-stone/30 bg-vault-deep accent-vault-emerald"
                         />
                         Marcado
                       </label>
@@ -728,7 +737,7 @@ export function TableTab({
                             values: { ...rowModal.values, [col.id]: e.target.value },
                           })
                         }
-                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                       >
                         <option value="">— Selecione —</option>
                         {(col.options ?? []).map((opt) => (
@@ -751,7 +760,7 @@ export function TableTab({
                             },
                           })
                         }
-                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm font-mono text-slate-100 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm font-mono tabular-nums text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                       />
                     ) : col.type === 'date' ? (
                       <input
@@ -763,7 +772,7 @@ export function TableTab({
                             values: { ...rowModal.values, [col.id]: e.target.value },
                           })
                         }
-                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                       />
                     ) : (
                       <input
@@ -775,7 +784,7 @@ export function TableTab({
                             values: { ...rowModal.values, [col.id]: e.target.value },
                           })
                         }
-                        className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                       />
                     )}
                   </div>
@@ -786,14 +795,14 @@ export function TableTab({
                 <button
                   type="button"
                   onClick={() => setRowModal(null)}
-                  className="rounded-xl border border-slate-700 px-4 py-2 text-xs text-slate-300 hover:bg-slate-800 cursor-pointer"
+                  className="rounded-xl border border-vault-stone/25 px-4 py-2 text-xs text-vault-stone hover:bg-vault-hover cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingRow}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 cursor-pointer"
+                  className="rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 cursor-pointer"
                 >
                   {savingRow ? 'Criptografando...' : 'Salvar Registro'}
                 </button>
@@ -805,21 +814,21 @@ export function TableTab({
 
       {/* Column Schema Editor Modal */}
       {schemaModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h2 className="text-base font-semibold text-slate-100">
+                <h2 className="text-base font-semibold text-vault-ivory">
                   Configurar Colunas da Tabela
                 </h2>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-vault-muted">
                   O esquema de colunas também é armazenado criptografado no banco.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setSchemaModal(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 cursor-pointer"
+                className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -829,7 +838,7 @@ export function TableTab({
               {schemaModal.map((col, idx) => (
                 <div
                   key={col.id}
-                  className="rounded-xl border border-slate-800 bg-slate-950/70 p-3 space-y-2.5"
+                  className="rounded-xl border border-vault-stone/18 bg-vault-deep/80 p-3 space-y-2.5"
                 >
                   <div className="flex flex-wrap items-center gap-2">
                     <input
@@ -841,7 +850,7 @@ export function TableTab({
                         setSchemaModal(next);
                       }}
                       placeholder="Nome da coluna"
-                      className="flex-1 min-w-[140px] rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                      className="flex-1 min-w-[140px] rounded-lg border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                     />
                     <select
                       value={col.type}
@@ -861,7 +870,7 @@ export function TableTab({
                         };
                         setSchemaModal(next);
                       }}
-                      className="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                      className="rounded-lg border border-vault-stone/22 bg-vault-canvas px-2.5 py-1.5 text-xs text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                     >
                       {Object.entries(COLUMN_TYPE_LABELS).map(([k, label]) => (
                         <option key={k} value={k}>
@@ -878,7 +887,7 @@ export function TableTab({
                           next[idx] = { ...col, currency: e.target.value };
                           setSchemaModal(next);
                         }}
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs text-slate-100"
+                        className="rounded-lg border border-vault-stone/22 bg-vault-canvas px-2 py-1.5 text-xs text-vault-ivory"
                       >
                         <option value="BRL">BRL (R$)</option>
                         <option value="USD">USD ($)</option>
@@ -894,7 +903,7 @@ export function TableTab({
                         [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
                         setSchemaModal(next);
                       }}
-                      className="rounded-lg border border-slate-800 p-1.5 text-slate-400 hover:bg-slate-800 disabled:opacity-30 cursor-pointer"
+                      className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory disabled:opacity-30 cursor-pointer"
                     >
                       <ArrowUp className="h-3.5 w-3.5" />
                     </button>
@@ -906,7 +915,7 @@ export function TableTab({
                         [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
                         setSchemaModal(next);
                       }}
-                      className="rounded-lg border border-slate-800 p-1.5 text-slate-400 hover:bg-slate-800 disabled:opacity-30 cursor-pointer"
+                      className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory disabled:opacity-30 cursor-pointer"
                     >
                       <ArrowDown className="h-3.5 w-3.5" />
                     </button>
@@ -915,7 +924,7 @@ export function TableTab({
                       onClick={() =>
                         setSchemaModal(schemaModal.filter((c) => c.id !== col.id))
                       }
-                      className="rounded-lg border border-slate-800 p-1.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 cursor-pointer"
+                      className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:text-vault-danger hover:bg-vault-danger/12 cursor-pointer"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
@@ -923,7 +932,7 @@ export function TableTab({
 
                   {col.type === 'select' && (
                     <div>
-                      <label className="block text-[11px] text-slate-400 mb-1">
+                      <label className="block text-[11px] text-vault-muted mb-1">
                         Opções da categoria (separadas por vírgula)
                       </label>
                       <input
@@ -937,7 +946,7 @@ export function TableTab({
                           };
                           setSchemaModal(next);
                         }}
-                        className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                        className="w-full rounded-lg border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                       />
                     </div>
                   )}
@@ -952,24 +961,24 @@ export function TableTab({
                     { id: crypto.randomUUID(), name: 'Nova Coluna', type: 'text' },
                   ])
                 }
-                className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-700 py-2.5 text-xs font-medium text-slate-300 hover:border-emerald-500/50 hover:text-emerald-300 transition cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-vault-stone/28 py-2.5 text-xs font-medium text-vault-stone hover:border-vault-emerald/55 hover:text-vault-ivory transition cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 Adicionar Coluna
               </button>
 
-              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+              <div className="flex justify-end gap-2 pt-3 border-t border-vault-stone/14">
                 <button
                   type="button"
                   onClick={() => setSchemaModal(null)}
-                  className="rounded-xl border border-slate-700 px-4 py-2 text-xs text-slate-300 hover:bg-slate-800 cursor-pointer"
+                  className="rounded-xl border border-vault-stone/25 px-4 py-2 text-xs text-vault-stone hover:bg-vault-hover cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={savingSchema}
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 cursor-pointer"
+                  className="rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 cursor-pointer"
                 >
                   {savingSchema ? 'Salvando...' : 'Salvar Colunas'}
                 </button>

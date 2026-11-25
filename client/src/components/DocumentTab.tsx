@@ -52,14 +52,12 @@ export function DocumentTab({
   const [kindFilter, setKindFilter] = useState<'all' | 'file' | 'note'>('all');
   const [dragActive, setDragActive] = useState(false);
 
-  // Upload modal state
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [fileTags, setFileTags] = useState('');
   const [fileSummary, setFileSummary] = useState('');
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Note modal state (create or edit)
   const [noteModal, setNoteModal] = useState<{
     id: string | null;
     title: string;
@@ -68,7 +66,6 @@ export function DocumentTab({
   } | null>(null);
   const [savingNote, setSavingNote] = useState(false);
 
-  // Secure preview modal state
   const [preview, setPreview] = useState<{
     doc: DecryptedDocument;
     url: string | null;
@@ -98,7 +95,6 @@ export function DocumentTab({
     void loadDocs();
   }, [loadDocs]);
 
-  // Revoke any active object URL when preview closes or unmounts
   useEffect(() => {
     return () => {
       if (preview?.url) {
@@ -289,21 +285,21 @@ export function DocumentTab({
 
   function renderIcon(doc: DecryptedDocument) {
     if (doc.kind === 'note') {
-      return <StickyNote className="h-5 w-5 text-amber-400" />;
+      return <StickyNote className="h-5 w-5 text-vault-warning" />;
     }
     const mime = doc.meta.mimeType ?? '';
     if (mime.startsWith('image/')) {
-      return <FileImage className="h-5 w-5 text-sky-400" />;
+      return <FileImage className="h-5 w-5 text-vault-stone" />;
     }
     if (mime === 'application/pdf') {
-      return <FileText className="h-5 w-5 text-rose-400" />;
+      return <FileText className="h-5 w-5 text-vault-danger" />;
     }
-    return <File className="h-5 w-5 text-emerald-400" />;
+    return <File className="h-5 w-5 text-vault-emerald" />;
   }
 
   return (
     <div
-      className="flex-1 flex flex-col h-screen overflow-hidden"
+      className="flex-1 flex flex-col h-screen overflow-hidden bg-vault-canvas"
       onDragOver={(e) => {
         if (!canEdit) return;
         e.preventDefault();
@@ -319,22 +315,24 @@ export function DocumentTab({
       }}
     >
       {/* Top Bar */}
-      <header className="px-6 py-4 border-b border-slate-800 bg-slate-900/50 flex flex-wrap items-center justify-between gap-4">
+      <header className="px-6 py-4 border-b border-vault-stone/16 bg-vault-canvas flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-bold text-slate-100 truncate">{tab.meta.title}</h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 text-[11px] font-medium text-emerald-300">
+            <h1 className="text-xl font-semibold text-vault-ivory tracking-tight truncate">
+              {tab.meta.title}
+            </h1>
+            <span className="inline-flex items-center gap-1 rounded-full bg-vault-emerald/14 border border-vault-emerald/35 px-2.5 py-0.5 text-[11px] font-medium text-vault-emerald tabular-nums">
               <Lock className="h-3 w-3" />
               AES-256 · v{tab.keyVersion}
             </span>
             {tab.role === 'viewer' && (
-              <span className="rounded-full bg-slate-800 px-2 py-0.5 text-[11px] text-slate-400">
+              <span className="rounded-full border border-vault-stone/20 bg-vault-surface px-2.5 py-0.5 text-[11px] text-vault-muted">
                 Somente leitura
               </span>
             )}
           </div>
           {tab.meta.description && (
-            <p className="text-xs text-slate-400 mt-0.5 truncate">{tab.meta.description}</p>
+            <p className="text-xs text-vault-muted mt-0.5 truncate">{tab.meta.description}</p>
           )}
         </div>
 
@@ -353,7 +351,7 @@ export function DocumentTab({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-emerald-500 transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-vault-ivory px-3.5 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
               >
                 <Upload className="h-4 w-4" />
                 Enviar Arquivo
@@ -363,7 +361,7 @@ export function DocumentTab({
                 onClick={() =>
                   setNoteModal({ id: null, title: '', content: '', tags: '' })
                 }
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-100 hover:bg-slate-700 transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/25 bg-vault-surface px-3.5 py-2 text-xs font-medium text-vault-ivory hover:bg-vault-hover transition cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 Nova Nota
@@ -373,7 +371,7 @@ export function DocumentTab({
           <button
             type="button"
             onClick={onOpenShare}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-200 hover:bg-slate-800 transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer tabular-nums"
           >
             <Share2 className="h-4 w-4" />
             Acesso ({tab.memberCount})
@@ -383,7 +381,7 @@ export function DocumentTab({
               type="button"
               onClick={onDeleteTab}
               title="Excluir aba"
-              className="rounded-xl border border-slate-800 p-2 text-slate-400 hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-400 transition cursor-pointer"
+              className="rounded-xl border border-vault-stone/18 bg-vault-surface p-2 text-vault-muted hover:border-vault-danger/45 hover:bg-vault-danger/10 hover:text-vault-danger transition cursor-pointer"
             >
               <Trash2 className="h-4 w-4" />
             </button>
@@ -392,18 +390,18 @@ export function DocumentTab({
       </header>
 
       {/* Search & Filters */}
-      <div className="px-6 py-3 border-b border-slate-800/70 bg-slate-950/40 flex flex-wrap items-center gap-3">
+      <div className="px-6 py-3 border-b border-vault-stone/14 bg-vault-deep/45 flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[220px]">
-          <Search className="h-4 w-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="h-4 w-4 text-vault-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar localmente por nome, tag ou conteúdo de nota..."
-            className="w-full rounded-xl border border-slate-800 bg-slate-900 pl-9 pr-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+            className="w-full rounded-xl border border-vault-stone/20 bg-vault-deep pl-9 pr-3 py-2 text-xs text-vault-ivory placeholder-vault-muted/75 focus:border-vault-stone/50 focus:outline-none"
           />
         </div>
-        <div className="inline-flex rounded-xl border border-slate-800 bg-slate-900 p-0.5 text-xs">
+        <div className="inline-flex rounded-xl border border-vault-stone/20 bg-vault-deep p-0.5 text-xs">
           {(['all', 'file', 'note'] as const).map((k) => (
             <button
               key={k}
@@ -411,8 +409,8 @@ export function DocumentTab({
               onClick={() => setKindFilter(k)}
               className={`rounded-lg px-3 py-1.5 font-medium transition cursor-pointer ${
                 kindFilter === k
-                  ? 'bg-slate-800 text-slate-100'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-vault-surface text-vault-ivory'
+                  : 'text-vault-muted hover:text-vault-ivory'
               }`}
             >
               {k === 'all' ? 'Todos' : k === 'file' ? 'Arquivos' : 'Notas'}
@@ -424,26 +422,26 @@ export function DocumentTab({
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto p-6 relative">
         {dragActive && canEdit && (
-          <div className="absolute inset-4 z-20 rounded-2xl border-2 border-dashed border-emerald-500 bg-emerald-950/60 backdrop-blur-xs flex flex-col items-center justify-center text-emerald-200 pointer-events-none">
-            <Upload className="h-10 w-10 mb-2" />
+          <div className="absolute inset-4 z-20 rounded-2xl border-2 border-dashed border-vault-emerald bg-vault-deep/90 backdrop-blur-xs flex flex-col items-center justify-center text-vault-ivory pointer-events-none">
+            <Upload className="h-10 w-10 text-vault-emerald mb-2" />
             <div className="text-base font-semibold">Solte o arquivo para criptografar</div>
-            <div className="text-xs text-emerald-300/80 mt-1">
+            <div className="text-xs text-vault-muted mt-1">
               Criptografia AES-256-GCM executada antes do envio ao servidor
             </div>
           </div>
         )}
 
         {loading ? (
-          <div className="py-16 text-center text-sm text-slate-400">
+          <div className="py-16 text-center text-sm text-vault-muted">
             Descriptografando itens localmente...
           </div>
         ) : filteredDocs.length === 0 ? (
-          <div className="my-10 mx-auto max-w-md rounded-2xl border border-dashed border-slate-800 bg-slate-900/40 p-10 text-center">
-            <Lock className="h-9 w-9 text-slate-600 mx-auto mb-3" />
-            <h3 className="text-sm font-semibold text-slate-200">
+          <div className="my-10 mx-auto max-w-md rounded-2xl border border-dashed border-vault-stone/22 bg-vault-surface/50 p-10 text-center">
+            <Lock className="h-9 w-9 text-vault-muted/70 mx-auto mb-3" />
+            <h3 className="text-sm font-semibold text-vault-ivory">
               {docs.length === 0 ? 'Cofre vazio nesta aba' : 'Nenhum resultado encontrado'}
             </h3>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+            <p className="text-xs text-vault-muted mt-1.5 leading-relaxed">
               {docs.length === 0
                 ? 'Arraste arquivos aqui (PDFs, imagens, comprovantes) ou crie notas pessoais. Tudo é criptografado no navegador antes de tocar o servidor.'
                 : 'Tente outro termo de busca ou filtro.'}
@@ -454,21 +452,21 @@ export function DocumentTab({
             {filteredDocs.map((doc) => (
               <div
                 key={doc.id}
-                className="group rounded-2xl border border-slate-800 bg-slate-900/70 p-4 hover:border-slate-700 transition flex flex-col justify-between gap-3"
+                className="group rounded-2xl border border-vault-stone/16 bg-vault-surface p-4 hover:border-vault-stone/32 transition flex flex-col justify-between gap-3"
               >
                 <div>
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-800/80 border border-slate-700/60">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-vault-deep border border-vault-stone/18">
                       {renderIcon(doc)}
                     </div>
                     <div className="min-w-0 flex-1">
                       <h3
-                        className="text-sm font-semibold text-slate-100 truncate"
+                        className="text-sm font-semibold text-vault-ivory truncate"
                         title={doc.meta.name}
                       >
                         {doc.meta.name}
                       </h3>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-[11px] text-vault-muted mt-0.5 tabular-nums">
                         {doc.kind === 'file'
                           ? `${formatBytes(doc.meta.originalSize ?? doc.blobSize)} · Arquivo .enc`
                           : 'Nota criptografada'}
@@ -477,13 +475,13 @@ export function DocumentTab({
                   </div>
 
                   {doc.kind === 'note' && doc.content && (
-                    <p className="mt-3 text-xs text-slate-300 line-clamp-3 whitespace-pre-wrap bg-slate-950/50 rounded-xl p-2.5 border border-slate-800/80">
+                    <p className="mt-3 text-xs text-vault-body line-clamp-3 whitespace-pre-wrap bg-vault-deep/75 rounded-xl p-2.5 border border-vault-stone/14">
                       {doc.content}
                     </p>
                   )}
 
                   {doc.kind === 'file' && doc.meta.summary && (
-                    <p className="mt-2.5 text-xs text-slate-400 line-clamp-2">
+                    <p className="mt-2.5 text-xs text-vault-muted line-clamp-2">
                       {doc.meta.summary}
                     </p>
                   )}
@@ -493,9 +491,9 @@ export function DocumentTab({
                       {doc.meta.tags.map((t) => (
                         <span
                           key={t}
-                          className="inline-flex items-center gap-1 rounded-md bg-slate-800 px-2 py-0.5 text-[10px] text-slate-300"
+                          className="inline-flex items-center gap-1 rounded-md border border-vault-stone/18 bg-vault-canvas px-2 py-0.5 text-[10px] text-vault-stone"
                         >
-                          <Tag className="h-2.5 w-2.5 text-emerald-400" />
+                          <Tag className="h-2.5 w-2.5 text-vault-emerald" />
                           {t}
                         </span>
                       ))}
@@ -503,8 +501,8 @@ export function DocumentTab({
                   )}
                 </div>
 
-                <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-500">
+                <div className="pt-3 border-t border-vault-stone/14 flex items-center justify-between">
+                  <span className="text-[11px] text-vault-muted tabular-nums">
                     {formatDateTime(doc.updatedAt)}
                   </span>
                   <div className="flex items-center gap-1">
@@ -512,7 +510,7 @@ export function DocumentTab({
                       type="button"
                       onClick={() => handlePreviewFile(doc)}
                       title={doc.kind === 'note' ? 'Abrir / Editar nota' : 'Visualizar localmente'}
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-emerald-400 transition cursor-pointer"
+                      className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory transition cursor-pointer"
                     >
                       <Eye className="h-4 w-4" />
                     </button>
@@ -521,7 +519,7 @@ export function DocumentTab({
                         type="button"
                         onClick={() => handleDownloadFile(doc)}
                         title="Descriptografar e baixar"
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-sky-400 transition cursor-pointer"
+                        className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-emerald transition cursor-pointer"
                       >
                         <Download className="h-4 w-4" />
                       </button>
@@ -531,7 +529,7 @@ export function DocumentTab({
                         type="button"
                         onClick={() => handleDeleteDoc(doc)}
                         title="Excluir"
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-rose-400 transition cursor-pointer"
+                        className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-danger/12 hover:text-vault-danger transition cursor-pointer"
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
@@ -546,31 +544,31 @@ export function DocumentTab({
 
       {/* Upload Confirmation Modal */}
       {pendingFile && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+          <div className="w-full max-w-md rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold text-slate-100">
+              <h2 className="text-base font-semibold text-vault-ivory">
                 Criptografar e Enviar Arquivo
               </h2>
               <button
                 type="button"
                 onClick={() => setPendingFile(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 cursor-pointer"
+                className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="rounded-xl border border-slate-800 bg-slate-950 p-3 mb-4 text-xs">
-              <div className="font-semibold text-slate-100 truncate">{pendingFile.name}</div>
-              <div className="text-slate-400 mt-0.5">
+            <div className="rounded-xl border border-vault-stone/18 bg-vault-deep p-3 mb-4 text-xs">
+              <div className="font-semibold text-vault-ivory truncate">{pendingFile.name}</div>
+              <div className="text-vault-muted mt-0.5 tabular-nums">
                 {formatBytes(pendingFile.size)} · {pendingFile.type || 'binário'}
               </div>
             </div>
 
             <form onSubmit={handleConfirmUpload} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-vault-stone mb-1">
                   Tags (separadas por vírgula)
                 </label>
                 <input
@@ -578,11 +576,11 @@ export function DocumentTab({
                   value={fileTags}
                   onChange={(e) => setFileTags(e.target.value)}
                   placeholder="ex: IRPF, 2026, comprovante"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-xs text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-vault-stone mb-1">
                   Observação (opcional)
                 </label>
                 <input
@@ -590,21 +588,21 @@ export function DocumentTab({
                   value={fileSummary}
                   onChange={(e) => setFileSummary(e.target.value)}
                   placeholder="Anotação criptografada sobre este documento"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                  className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-xs text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setPendingFile(null)}
-                  className="rounded-xl border border-slate-700 px-3.5 py-2 text-xs text-slate-300 hover:bg-slate-800 cursor-pointer"
+                  className="rounded-xl border border-vault-stone/25 px-3.5 py-2 text-xs text-vault-stone hover:bg-vault-hover cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={uploading}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 cursor-pointer"
                 >
                   <Lock className="h-3.5 w-3.5" />
                   {uploading ? 'Criptografando e enviando...' : 'Criptografar e Salvar'}
@@ -617,16 +615,16 @@ export function DocumentTab({
 
       {/* Note Create/Edit Modal */}
       {noteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-semibold text-slate-100">
+              <h2 className="text-base font-semibold text-vault-ivory">
                 {noteModal.id ? 'Nota Criptografada' : 'Nova Nota Criptografada'}
               </h2>
               <button
                 type="button"
                 onClick={() => setNoteModal(null)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 cursor-pointer"
+                className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -634,7 +632,7 @@ export function DocumentTab({
 
             <form onSubmit={handleSaveNote} className="space-y-3.5">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-vault-stone mb-1">
                   Título
                 </label>
                 <input
@@ -646,11 +644,11 @@ export function DocumentTab({
                     setNoteModal({ ...noteModal, title: e.target.value })
                   }
                   placeholder="Título da anotação"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+                  className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2 text-sm text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none disabled:opacity-60"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-vault-stone mb-1">
                   Tags (separadas por vírgula)
                 </label>
                 <input
@@ -661,11 +659,11 @@ export function DocumentTab({
                     setNoteModal({ ...noteModal, tags: e.target.value })
                   }
                   placeholder="ex: banco, senhas, pessoal"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+                  className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2 text-xs text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none disabled:opacity-60"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">
+                <label className="block text-xs font-medium text-vault-stone mb-1">
                   Conteúdo
                 </label>
                 <textarea
@@ -676,14 +674,14 @@ export function DocumentTab({
                     setNoteModal({ ...noteModal, content: e.target.value })
                   }
                   placeholder="Escreva aqui — todo este conteúdo será criptografado no navegador..."
-                  className="w-full rounded-xl border border-slate-700 bg-slate-950 p-3.5 text-sm text-slate-100 font-mono leading-relaxed focus:border-emerald-500 focus:outline-none disabled:opacity-60"
+                  className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep p-3.5 text-sm text-vault-ivory placeholder-vault-muted/70 font-mono leading-relaxed focus:border-vault-stone/60 focus:outline-none disabled:opacity-60"
                 />
               </div>
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
                   onClick={() => setNoteModal(null)}
-                  className="rounded-xl border border-slate-700 px-4 py-2 text-xs text-slate-300 hover:bg-slate-800 cursor-pointer"
+                  className="rounded-xl border border-vault-stone/25 px-4 py-2 text-xs text-vault-stone hover:bg-vault-hover cursor-pointer"
                 >
                   Fechar
                 </button>
@@ -691,7 +689,7 @@ export function DocumentTab({
                   <button
                     type="submit"
                     disabled={savingNote}
-                    className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 cursor-pointer"
+                    className="rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 cursor-pointer"
                   >
                     {savingNote ? 'Criptografando...' : 'Salvar Nota'}
                   </button>
@@ -704,14 +702,14 @@ export function DocumentTab({
 
       {/* Secure Local File Preview Modal */}
       {preview && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-xs p-4">
-          <div className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border border-slate-800 bg-slate-900 shadow-2xl overflow-hidden">
-            <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between gap-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/85 backdrop-blur-xs p-4">
+          <div className="w-full max-w-4xl max-h-[90vh] flex flex-col rounded-2xl border border-vault-stone/30 bg-vault-surface shadow-2xl overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-vault-stone/16 flex items-center justify-between gap-3">
               <div className="min-w-0">
-                <div className="text-sm font-semibold text-slate-100 truncate">
+                <div className="text-sm font-semibold text-vault-ivory truncate">
                   {preview.doc.meta.name}
                 </div>
-                <div className="text-[11px] text-emerald-400">
+                <div className="text-[11px] text-vault-emerald">
                   Descriptografado exclusivamente na memória do seu navegador
                 </div>
               </div>
@@ -719,7 +717,7 @@ export function DocumentTab({
                 <button
                   type="button"
                   onClick={() => handleDownloadFile(preview.doc)}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-700 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/25 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory hover:bg-vault-hover cursor-pointer"
                 >
                   <Download className="h-3.5 w-3.5" />
                   Baixar
@@ -727,20 +725,20 @@ export function DocumentTab({
                 <button
                   type="button"
                   onClick={closePreview}
-                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100 cursor-pointer"
+                  className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-auto bg-slate-950 p-4 flex items-center justify-center min-h-[400px]">
+            <div className="flex-1 overflow-auto bg-vault-deep p-4 flex items-center justify-center min-h-[400px]">
               {preview.loading ? (
-                <div className="text-sm text-slate-400">
+                <div className="text-sm text-vault-muted">
                   Baixando blob criptografado e descriptografando localmente...
                 </div>
               ) : preview.textContent !== null ? (
-                <pre className="w-full h-full overflow-auto text-xs text-slate-200 font-mono whitespace-pre-wrap p-3">
+                <pre className="w-full h-full overflow-auto text-xs text-vault-body font-mono whitespace-pre-wrap p-3">
                   {preview.textContent}
                 </pre>
               ) : preview.url && (preview.doc.meta.mimeType ?? '').startsWith('image/') ? (
@@ -753,19 +751,19 @@ export function DocumentTab({
                 <iframe
                   src={preview.url}
                   title={preview.doc.meta.name}
-                  className="w-full h-[75vh] rounded-lg border border-slate-800 bg-white"
+                  className="w-full h-[75vh] rounded-lg border border-vault-stone/20 bg-white"
                 />
               ) : (
                 <div className="text-center space-y-3">
-                  <File className="h-12 w-12 text-slate-500 mx-auto" />
-                  <p className="text-sm text-slate-300">
+                  <File className="h-12 w-12 text-vault-muted mx-auto" />
+                  <p className="text-sm text-vault-body">
                     Pré-visualização não disponível para este tipo de arquivo (
                     {preview.doc.meta.mimeType || 'binário'}).
                   </p>
                   <button
                     type="button"
                     onClick={() => handleDownloadFile(preview.doc)}
-                    className="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 cursor-pointer"
+                    className="inline-flex items-center gap-2 rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone cursor-pointer"
                   >
                     <Download className="h-4 w-4" />
                     Baixar arquivo descriptografado

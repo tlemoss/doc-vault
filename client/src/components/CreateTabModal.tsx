@@ -76,26 +76,28 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+      <div className="w-full max-w-md rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-slate-100">Nova Aba Criptografada</h2>
+          <h2 className="text-lg font-semibold text-vault-ivory tracking-tight">
+            Nova Aba Criptografada
+          </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-100 cursor-pointer"
+            className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        <p className="text-xs text-slate-400 mb-4">
+        <p className="text-xs text-vault-muted mb-4 leading-relaxed">
           Uma chave exclusiva AES-256-GCM será gerada no seu navegador para esta aba. Nem o nome da
           aba fica visível para o servidor.
         </p>
 
         {error && (
-          <div className="mb-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-200">
+          <div className="mb-4 rounded-xl border border-vault-danger/40 bg-vault-danger/10 p-3 text-xs text-vault-danger">
             {error}
           </div>
         )}
@@ -107,13 +109,17 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
               onClick={() => setType('documents')}
               className={`rounded-xl border p-3.5 text-left transition cursor-pointer ${
                 type === 'documents'
-                  ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-200'
-                  : 'border-slate-700 bg-slate-950/60 text-slate-300 hover:border-slate-600'
+                  ? 'border-vault-emerald/45 bg-vault-emerald/14 text-vault-ivory'
+                  : 'border-vault-stone/18 bg-vault-deep/70 text-vault-body hover:border-vault-stone/35'
               }`}
             >
-              <FileText className="h-5 w-5 mb-2" />
-              <div className="text-sm font-semibold">Documentos</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">
+              <FileText
+                className={`h-5 w-5 mb-2 ${
+                  type === 'documents' ? 'text-vault-emerald' : 'text-vault-stone'
+                }`}
+              />
+              <div className="text-sm font-semibold text-vault-ivory">Documentos</div>
+              <div className="text-[11px] text-vault-muted mt-0.5">
                 PDFs, imagens, recibos e notas pessoais
               </div>
             </button>
@@ -123,20 +129,24 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
               onClick={() => setType('table')}
               className={`rounded-xl border p-3.5 text-left transition cursor-pointer ${
                 type === 'table'
-                  ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-200'
-                  : 'border-slate-700 bg-slate-950/60 text-slate-300 hover:border-slate-600'
+                  ? 'border-vault-emerald/45 bg-vault-emerald/14 text-vault-ivory'
+                  : 'border-vault-stone/18 bg-vault-deep/70 text-vault-body hover:border-vault-stone/35'
               }`}
             >
-              <Table2 className="h-5 w-5 mb-2" />
-              <div className="text-sm font-semibold">Tabela</div>
-              <div className="text-[11px] text-slate-400 mt-0.5">
+              <Table2
+                className={`h-5 w-5 mb-2 ${
+                  type === 'table' ? 'text-vault-emerald' : 'text-vault-stone'
+                }`}
+              />
+              <div className="text-sm font-semibold text-vault-ivory">Tabela</div>
+              <div className="text-[11px] text-vault-muted mt-0.5">
                 Dados estruturados, financeiro e totais
               </div>
             </button>
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-vault-stone mb-1.5">
               Nome da aba
             </label>
             <input
@@ -150,12 +160,12 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
                   ? 'ex: Documentos Pessoais, Imposto de Renda'
                   : 'ex: Finanças 2026, Contas da Casa'
               }
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2 text-sm text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-300 mb-1.5">
+            <label className="block text-xs font-medium text-vault-stone mb-1.5">
               Descrição (opcional, também criptografada)
             </label>
             <input
@@ -163,19 +173,19 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Breve resumo do conteúdo desta aba"
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-sm text-slate-100 placeholder-slate-500 focus:border-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2 text-sm text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none"
             />
           </div>
 
           {type === 'table' && (
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">
+              <label className="block text-xs font-medium text-vault-stone mb-1.5">
                 Modelo inicial de colunas
               </label>
               <select
                 value={template}
                 onChange={(e) => setTemplate(e.target.value as TableTemplate)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-sm text-slate-100 focus:border-emerald-500 focus:outline-none"
+                className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3.5 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
               >
                 <option value="financeiro">
                   Financeiro Mensal (Data, Descrição, Categoria, Valor R$, Pago)
@@ -192,14 +202,14 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-700 px-4 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 cursor-pointer"
+              className="rounded-xl border border-vault-stone/25 px-4 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={busy}
-              className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 disabled:opacity-50 cursor-pointer"
+              className="rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone disabled:opacity-50 cursor-pointer"
             >
               {busy ? 'Gerando chave e criando...' : 'Criar Aba'}
             </button>

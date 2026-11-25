@@ -36,7 +36,6 @@ export function AdminModal({
   const [invites, setInvites] = useState<AdminInvite[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Invite form
   const [invUsername, setInvUsername] = useState('');
   const [invRole, setInvRole] = useState<UserRole>('user');
   const [invQuotaMb, setInvQuotaMb] = useState(Math.round(defaultQuotaBytes / MB));
@@ -44,7 +43,6 @@ export function AdminModal({
   const [createdLink, setCreatedLink] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Quota inline edits
   const [quotaEdits, setQuotaEdits] = useState<Record<string, number>>({});
 
   const load = useCallback(async () => {
@@ -130,16 +128,16 @@ export function AdminModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xs p-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
+      <div className="w-full max-w-3xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
-            <Shield className="h-5 w-5 text-emerald-400" />
+            <Shield className="h-5 w-5 text-vault-emerald" />
             <div>
-              <h2 className="text-base font-semibold text-slate-100">
+              <h2 className="text-base font-semibold text-vault-ivory">
                 Administração da Plataforma
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-vault-muted">
                 Gerencie contas, limites de armazenamento (padrão 1 GB) e convites Zero-Knowledge.
               </p>
             </div>
@@ -147,21 +145,20 @@ export function AdminModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 cursor-pointer"
+            className="rounded-lg p-1 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 border-b border-slate-800 pb-3 mb-4">
+        <div className="flex gap-2 border-b border-vault-stone/16 pb-3 mb-4">
           <button
             type="button"
             onClick={() => setSection('users')}
             className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition cursor-pointer ${
               section === 'users'
-                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                : 'text-slate-400 hover:bg-slate-800'
+                ? 'bg-vault-ivory text-vault-canvas'
+                : 'text-vault-muted hover:bg-vault-hover hover:text-vault-ivory'
             }`}
           >
             <Users className="h-4 w-4" />
@@ -172,8 +169,8 @@ export function AdminModal({
             onClick={() => setSection('invites')}
             className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition cursor-pointer ${
               section === 'invites'
-                ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                : 'text-slate-400 hover:bg-slate-800'
+                ? 'bg-vault-ivory text-vault-canvas'
+                : 'text-vault-muted hover:bg-vault-hover hover:text-vault-ivory'
             }`}
           >
             <UserPlus className="h-4 w-4" />
@@ -183,7 +180,7 @@ export function AdminModal({
 
         <div className="flex-1 overflow-y-auto space-y-4 pr-1">
           {loading ? (
-            <div className="py-10 text-center text-xs text-slate-400">Carregando...</div>
+            <div className="py-10 text-center text-xs text-vault-muted">Carregando...</div>
           ) : section === 'users' ? (
             users.map((u) => {
               const pct = Math.min(
@@ -193,30 +190,30 @@ export function AdminModal({
               return (
                 <div
                   key={u.id}
-                  className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3"
+                  className="rounded-xl border border-vault-stone/18 bg-vault-deep/70 p-4 space-y-3"
                 >
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-semibold text-slate-100">
+                        <span className="text-sm font-semibold text-vault-ivory">
                           {u.username}
                         </span>
                         {u.id === currentUserId && (
-                          <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-400">
+                          <span className="rounded bg-vault-stone/12 px-1.5 py-0.5 text-[10px] text-vault-stone">
                             você
                           </span>
                         )}
                         <span
                           className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${
                             u.isActive
-                              ? 'bg-emerald-500/15 text-emerald-300'
-                              : 'bg-rose-500/15 text-rose-300'
+                              ? 'bg-vault-emerald/15 text-vault-emerald'
+                              : 'bg-vault-danger/15 text-vault-danger'
                           }`}
                         >
                           {u.isActive ? 'Ativo' : 'Desativado'}
                         </span>
                       </div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
+                      <div className="text-[11px] text-vault-muted mt-0.5 tabular-nums">
                         Uso: {formatBytes(u.usedBytes)} / {formatBytes(u.quotaBytes)} ({pct}%) ·
                         Criado em {formatDateTime(u.createdAt)}
                       </div>
@@ -228,7 +225,7 @@ export function AdminModal({
                         onChange={(e) =>
                           handleUpdateUser(u.id, { role: e.target.value as UserRole })
                         }
-                        className="rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1.5 text-xs text-slate-200"
+                        className="rounded-lg border border-vault-stone/22 bg-vault-canvas px-2.5 py-1.5 text-xs text-vault-ivory"
                       >
                         <option value="user">Usuário</option>
                         <option value="admin">Administrador</option>
@@ -241,8 +238,8 @@ export function AdminModal({
                         }
                         className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium cursor-pointer ${
                           u.isActive
-                            ? 'border-rose-500/30 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20'
-                            : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20'
+                            ? 'border-vault-danger/35 bg-vault-danger/10 text-vault-danger hover:bg-vault-danger/20'
+                            : 'border-vault-emerald/35 bg-vault-emerald/10 text-vault-emerald hover:bg-vault-emerald/20'
                         }`}
                       >
                         {u.isActive ? 'Desativar' : 'Reativar'}
@@ -250,9 +247,8 @@ export function AdminModal({
                     </div>
                   </div>
 
-                  {/* Quota adjuster */}
-                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80 text-xs">
-                    <span className="text-slate-400">Quota (MB):</span>
+                  <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-vault-stone/12 text-xs">
+                    <span className="text-vault-muted">Quota (MB):</span>
                     <input
                       type="number"
                       min={1}
@@ -264,7 +260,7 @@ export function AdminModal({
                           [u.id]: Number(e.target.value),
                         }))
                       }
-                      className="w-24 rounded-lg border border-slate-700 bg-slate-900 px-2.5 py-1 font-mono text-slate-100"
+                      className="w-24 rounded-lg border border-vault-stone/22 bg-vault-canvas px-2.5 py-1 font-mono tabular-nums text-vault-ivory"
                     />
                     <button
                       type="button"
@@ -273,7 +269,7 @@ export function AdminModal({
                           quotaBytes: Math.max(1, quotaEdits[u.id] ?? 1024) * MB,
                         })
                       }
-                      className="rounded-lg bg-slate-800 border border-slate-700 px-2.5 py-1 text-slate-200 hover:bg-slate-700 cursor-pointer"
+                      className="rounded-lg bg-vault-surface border border-vault-stone/25 px-2.5 py-1 text-vault-ivory hover:bg-vault-hover cursor-pointer"
                     >
                       Aplicar
                     </button>
@@ -289,7 +285,7 @@ export function AdminModal({
                           onClick={() =>
                             handleUpdateUser(u.id, { quotaBytes: preset.bytes })
                           }
-                          className="rounded-md bg-slate-900 border border-slate-800 px-2 py-0.5 text-[11px] text-slate-400 hover:text-emerald-300 hover:border-emerald-500/40 cursor-pointer"
+                          className="rounded-md bg-vault-canvas border border-vault-stone/18 px-2 py-0.5 text-[11px] text-vault-stone hover:border-vault-emerald/45 hover:text-vault-ivory cursor-pointer"
                         >
                           {preset.label}
                         </button>
@@ -303,20 +299,20 @@ export function AdminModal({
             <>
               <form
                 onSubmit={handleCreateInvite}
-                className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 space-y-3"
+                className="rounded-xl border border-vault-stone/18 bg-vault-deep/70 p-4 space-y-3"
               >
-                <div className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
-                  <Link2 className="h-4 w-4 text-emerald-400" />
+                <div className="text-xs font-semibold text-vault-ivory flex items-center gap-1.5">
+                  <Link2 className="h-4 w-4 text-vault-emerald" />
                   Gerar Novo Link de Convite (Uso Único)
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-[11px] text-vault-muted">
                   O usuário convidado abrirá o link e criará sua própria senha mestre e par de
                   chaves RSA localmente no navegador.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] text-vault-stone mb-1">
                       Usuário reservado (opcional)
                     </label>
                     <input
@@ -324,22 +320,22 @@ export function AdminModal({
                       value={invUsername}
                       onChange={(e) => setInvUsername(e.target.value)}
                       placeholder="Livre se vazio"
-                      className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-100 focus:border-emerald-500 focus:outline-none"
+                      className="w-full rounded-xl border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory placeholder-vault-muted/70 focus:border-vault-stone/60 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">Perfil</label>
+                    <label className="block text-[11px] text-vault-stone mb-1">Perfil</label>
                     <select
                       value={invRole}
                       onChange={(e) => setInvRole(e.target.value as UserRole)}
-                      className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs text-slate-100"
+                      className="w-full rounded-xl border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory"
                     >
                       <option value="user">Usuário</option>
                       <option value="admin">Administrador</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] text-vault-stone mb-1">
                       Quota inicial (MB — 1024 = 1 GB)
                     </label>
                     <input
@@ -348,11 +344,11 @@ export function AdminModal({
                       max={102400}
                       value={invQuotaMb}
                       onChange={(e) => setInvQuotaMb(Number(e.target.value))}
-                      className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-mono text-slate-100"
+                      className="w-full rounded-xl border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs font-mono tabular-nums text-vault-ivory"
                     />
                   </div>
                   <div>
-                    <label className="block text-[11px] text-slate-400 mb-1">
+                    <label className="block text-[11px] text-vault-stone mb-1">
                       Validade (horas)
                     </label>
                     <input
@@ -361,21 +357,21 @@ export function AdminModal({
                       max={720}
                       value={invExpiresHours}
                       onChange={(e) => setInvExpiresHours(Number(e.target.value))}
-                      className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-1.5 text-xs font-mono text-slate-100"
+                      className="w-full rounded-xl border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs font-mono tabular-nums text-vault-ivory"
                     />
                   </div>
                 </div>
 
                 <button
                   type="submit"
-                  className="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 cursor-pointer"
+                  className="rounded-xl bg-vault-ivory px-4 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone cursor-pointer"
                 >
                   Gerar Link de Convite
                 </button>
 
                 {createdLink && (
-                  <div className="mt-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 space-y-2">
-                    <div className="text-[11px] font-semibold text-emerald-300">
+                  <div className="mt-3 rounded-xl border border-vault-emerald/35 bg-vault-emerald/10 p-3 space-y-2">
+                    <div className="text-[11px] font-semibold text-vault-emerald">
                       Link de convite pronto (exibido uma única vez):
                     </div>
                     <div className="flex items-center gap-2">
@@ -383,7 +379,7 @@ export function AdminModal({
                         type="text"
                         readOnly
                         value={createdLink}
-                        className="flex-1 rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1.5 font-mono text-[11px] text-emerald-200"
+                        className="flex-1 rounded-lg border border-vault-stone/22 bg-vault-deep px-2.5 py-1.5 font-mono text-[11px] text-vault-ivory"
                       />
                       <button
                         type="button"
@@ -392,11 +388,11 @@ export function AdminModal({
                           setCopiedLink(true);
                           setTimeout(() => setCopiedLink(false), 2000);
                         }}
-                        className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-500 cursor-pointer"
+                        className="inline-flex items-center gap-1 rounded-lg bg-vault-ivory px-3 py-1.5 text-xs font-semibold text-vault-canvas hover:bg-vault-stone cursor-pointer"
                       >
                         {copiedLink ? (
                           <>
-                            <Check className="h-3.5 w-3.5" />
+                            <Check className="h-3.5 w-3.5 text-vault-emerald" />
                             Copiado
                           </>
                         ) : (
@@ -412,25 +408,27 @@ export function AdminModal({
               </form>
 
               <div className="space-y-2">
-                <div className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+                <div className="text-[10px] font-semibold text-vault-muted uppercase tracking-[0.14em]">
                   Histórico de convites
                 </div>
                 {invites.length === 0 ? (
-                  <p className="text-xs text-slate-500">Nenhum convite criado ainda.</p>
+                  <p className="text-xs text-vault-muted">Nenhum convite criado ainda.</p>
                 ) : (
                   invites.map((inv) => {
                     const expired = new Date(inv.expiresAt).getTime() <= Date.now();
                     return (
                       <div
                         key={inv.tokenHash}
-                        className="flex items-center justify-between gap-3 rounded-xl border border-slate-800 bg-slate-950/50 px-3.5 py-2.5 text-xs"
+                        className="flex items-center justify-between gap-3 rounded-xl border border-vault-stone/16 bg-vault-deep/60 px-3.5 py-2.5 text-xs"
                       >
                         <div>
-                          <div className="font-medium text-slate-200">
+                          <div className="font-medium text-vault-ivory">
                             {inv.username ? `Reservado: ${inv.username}` : 'Qualquer usuário'} ·{' '}
-                            <span className="text-slate-400">{formatBytes(inv.quotaBytes)}</span>
+                            <span className="text-vault-stone tabular-nums">
+                              {formatBytes(inv.quotaBytes)}
+                            </span>
                           </div>
-                          <div className="text-[11px] text-slate-500">
+                          <div className="text-[11px] text-vault-muted tabular-nums">
                             {inv.usedBy
                               ? `Usado por ${inv.usedBy}`
                               : expired
@@ -443,7 +441,7 @@ export function AdminModal({
                             type="button"
                             onClick={() => handleRevokeInvite(inv.tokenHash)}
                             title="Revogar convite"
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 cursor-pointer"
+                            className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-danger/12 hover:text-vault-danger cursor-pointer"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>

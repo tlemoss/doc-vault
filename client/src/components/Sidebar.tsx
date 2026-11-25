@@ -49,24 +49,24 @@ export function Sidebar({
         onClick={() => onSelectTab(tab.id)}
         className={`w-full flex items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition cursor-pointer ${
           active
-            ? 'bg-emerald-500/15 text-emerald-200 border border-emerald-500/30'
-            : 'text-slate-300 hover:bg-slate-800/70 border border-transparent'
+            ? 'bg-vault-emerald/14 text-vault-ivory border border-vault-emerald/35'
+            : 'text-vault-body hover:bg-vault-surface border border-transparent'
         }`}
       >
         {tab.type === 'documents' ? (
           <FileText
-            className={`h-4 w-4 shrink-0 ${active ? 'text-emerald-400' : 'text-slate-400'}`}
+            className={`h-4 w-4 shrink-0 ${active ? 'text-vault-emerald' : 'text-vault-muted'}`}
           />
         ) : (
           <Table2
-            className={`h-4 w-4 shrink-0 ${active ? 'text-emerald-400' : 'text-slate-400'}`}
+            className={`h-4 w-4 shrink-0 ${active ? 'text-vault-emerald' : 'text-vault-muted'}`}
           />
         )}
         <span className="truncate flex-1 font-medium">{tab.meta.title}</span>
         {tab.memberCount > 1 && (
           <span
             title={`Compartilhada com ${tab.memberCount} pessoas`}
-            className="inline-flex items-center gap-0.5 rounded-md bg-slate-800 px-1.5 py-0.5 text-[10px] text-slate-300"
+            className="inline-flex items-center gap-0.5 rounded-md bg-vault-stone/12 px-1.5 py-0.5 text-[10px] text-vault-stone tabular-nums"
           >
             <Users className="h-2.5 w-2.5" />
             {tab.memberCount}
@@ -77,17 +77,19 @@ export function Sidebar({
   }
 
   return (
-    <aside className="w-72 shrink-0 border-r border-slate-800 bg-slate-900/70 flex flex-col h-screen">
+    <aside className="w-72 shrink-0 border-r border-vault-stone/16 bg-vault-deep flex flex-col h-screen">
       {/* Header */}
-      <div className="p-4 border-b border-slate-800">
+      <div className="p-4 border-b border-vault-stone/14">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-vault-emerald/14 border border-vault-emerald/35 text-vault-emerald">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <div className="font-bold text-slate-100 text-sm truncate">Documents Vault</div>
-            <div className="flex items-center gap-1.5 text-[11px] text-emerald-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="font-semibold text-vault-ivory text-sm tracking-tight truncate">
+              Documents Vault
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] text-vault-emerald">
+              <span className="h-1.5 w-1.5 rounded-full bg-vault-emerald animate-pulse" />
               Zero-Knowledge Ativo
             </div>
           </div>
@@ -96,7 +98,7 @@ export function Sidebar({
         <button
           type="button"
           onClick={onOpenCreateTab}
-          className="mt-3.5 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-semibold text-white hover:bg-emerald-500 transition cursor-pointer"
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-vault-ivory px-3 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
         >
           <Plus className="h-4 w-4" />
           Nova Aba Criptografada
@@ -104,14 +106,14 @@ export function Sidebar({
       </div>
 
       {/* Tabs list */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-5">
+      <div className="flex-1 overflow-y-auto p-3 space-y-6">
         <div>
-          <div className="px-2 mb-1.5 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-            <span>Documentos & Notas</span>
-            <span>{docTabs.length}</span>
+          <div className="px-2 mb-1.5 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-vault-muted">
+            <span>Documentos &amp; Notas</span>
+            <span className="tabular-nums">{docTabs.length}</span>
           </div>
           {docTabs.length === 0 ? (
-            <p className="px-2 py-1 text-xs text-slate-500 italic">
+            <p className="px-2 py-1 text-xs text-vault-muted/70 italic">
               Nenhuma aba de documentos
             </p>
           ) : (
@@ -120,12 +122,12 @@ export function Sidebar({
         </div>
 
         <div>
-          <div className="px-2 mb-1.5 flex items-center justify-between text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+          <div className="px-2 mb-1.5 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.14em] text-vault-muted">
             <span>Tabelas Estruturadas</span>
-            <span>{tableTabs.length}</span>
+            <span className="tabular-nums">{tableTabs.length}</span>
           </div>
           {tableTabs.length === 0 ? (
-            <p className="px-2 py-1 text-xs text-slate-500 italic">
+            <p className="px-2 py-1 text-xs text-vault-muted/70 italic">
               Nenhuma tabela criada
             </p>
           ) : (
@@ -135,34 +137,34 @@ export function Sidebar({
       </div>
 
       {/* Storage Quota + Account Footer */}
-      <div className="p-3 border-t border-slate-800 space-y-3 bg-slate-950/40">
-        <div className="rounded-xl border border-slate-800 bg-slate-900/70 p-2.5">
-          <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1.5">
-            <span className="inline-flex items-center gap-1">
-              <FolderLock className="h-3 w-3 text-emerald-400" />
+      <div className="p-3 border-t border-vault-stone/14 space-y-3 bg-vault-deep">
+        <div className="rounded-xl border border-vault-stone/16 bg-vault-canvas p-3">
+          <div className="flex items-center justify-between text-[11px] text-vault-muted mb-1.5">
+            <span className="inline-flex items-center gap-1.5">
+              <FolderLock className="h-3.5 w-3.5 text-vault-emerald" />
               Espaço Criptografado
             </span>
-            <span className="font-medium text-slate-200">{usagePct}%</span>
+            <span className="font-medium text-vault-ivory tabular-nums">{usagePct}%</span>
           </div>
-          <div className="h-1.5 w-full rounded-full bg-slate-800 overflow-hidden">
+          <div className="h-1.5 w-full rounded-full bg-vault-surface overflow-hidden">
             <div
               className={`h-full rounded-full transition-all ${
-                usagePct > 85 ? 'bg-rose-500' : 'bg-emerald-500'
+                usagePct > 85 ? 'bg-vault-danger' : 'bg-vault-emerald'
               }`}
               style={{ width: `${usagePct}%` }}
             />
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-1.5 text-[11px] text-vault-muted tabular-nums">
             {formatBytes(user.usedBytes)} de {formatBytes(user.quotaBytes)}
           </div>
         </div>
 
         <div className="flex items-center justify-between px-1">
           <div className="min-w-0">
-            <div className="text-xs font-semibold text-slate-200 truncate">
+            <div className="text-xs font-semibold text-vault-ivory truncate">
               {user.username}
             </div>
-            <div className="text-[10px] text-slate-500 uppercase tracking-wider">
+            <div className="text-[10px] text-vault-muted uppercase tracking-[0.12em]">
               {user.role === 'admin' ? 'Administrador' : 'Usuário'}
             </div>
           </div>
@@ -173,7 +175,7 @@ export function Sidebar({
                 type="button"
                 onClick={onOpenAdmin}
                 title="Administração (Usuários, Convites e Quotas)"
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition cursor-pointer"
+                className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-surface hover:text-vault-ivory transition cursor-pointer"
               >
                 <Settings className="h-4 w-4" />
               </button>
@@ -182,7 +184,7 @@ export function Sidebar({
               type="button"
               onClick={onLockVault}
               title="Trancar cofre (limpar chaves da memória)"
-              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-amber-400 transition cursor-pointer"
+              className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-surface hover:text-vault-warning transition cursor-pointer"
             >
               <Lock className="h-4 w-4" />
             </button>
@@ -190,7 +192,7 @@ export function Sidebar({
               type="button"
               onClick={onLogout}
               title="Sair"
-              className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-rose-400 transition cursor-pointer"
+              className="rounded-lg p-1.5 text-vault-muted hover:bg-vault-surface hover:text-vault-danger transition cursor-pointer"
             >
               <LogOut className="h-4 w-4" />
             </button>
