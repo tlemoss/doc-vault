@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { FolderLock, Plus, ShieldCheck } from 'lucide-react';
+import { FolderLock, PanelRightOpen, Plus, ShieldCheck } from 'lucide-react';
 import { api } from './api/client';
 import { createEncryptedTab, decryptTabRecord } from './crypto/vault';
 import type { CurrentUser, DecryptedTab, TableSchema, TabType } from './types';
@@ -25,6 +25,7 @@ export function App() {
   const [tabs, setTabs] = useState<DecryptedTab[]>([]);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showCreateTab, setShowCreateTab] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showAdminModal, setShowAdminModal] = useState(false);
@@ -99,6 +100,7 @@ export function App() {
     let timer = window.setTimeout(() => {
       setPrivateKey(null);
       setTabs([]);
+      setMobileMenuOpen(false);
       notify('Cofre trancado automaticamente por inatividade.');
     }, AUTO_LOCK_MS);
 
@@ -107,6 +109,7 @@ export function App() {
       timer = window.setTimeout(() => {
         setPrivateKey(null);
         setTabs([]);
+        setMobileMenuOpen(false);
         notify('Cofre trancado automaticamente por inatividade.');
       }, AUTO_LOCK_MS);
     };
@@ -129,6 +132,7 @@ export function App() {
   function handleLockVault() {
     setPrivateKey(null);
     setTabs([]);
+    setMobileMenuOpen(false);
     setShowCreateTab(false);
     setShowShareModal(false);
     setShowAdminModal(false);
@@ -141,6 +145,7 @@ export function App() {
     setPrivateKey(null);
     setTabs([]);
     setActiveTabId(null);
+    setMobileMenuOpen(false);
     setShowCreateTab(false);
     setShowShareModal(false);
     setShowAdminModal(false);
@@ -194,7 +199,7 @@ export function App() {
 
   if (booting) {
     return (
-      <div className="min-h-screen bg-vault-canvas flex items-center justify-center text-vault-muted text-sm gap-2">
+      <div className="min-h-dvh bg-vault-canvas flex items-center justify-center text-vault-muted text-sm gap-2">
         <ShieldCheck className="h-5 w-5 text-vault-emerald animate-pulse" />
         Inicializando ambiente Zero-Knowledge...
       </div>
@@ -213,7 +218,7 @@ export function App() {
         />
         {toast && (
           <div
-            className={`fixed bottom-5 right-5 z-50 rounded-xl border px-4 py-2.5 text-xs font-medium shadow-xl ${
+            className={`fixed bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 z-50 rounded-xl border px-4 py-2.5 text-xs font-medium shadow-xl ${
               toast.tone === 'err'
                 ? 'border-vault-danger/45 bg-vault-deep text-vault-danger'
                 : 'border-vault-emerald/40 bg-vault-surface text-vault-ivory'
@@ -227,11 +232,13 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-vault-canvas text-vault-body flex overflow-hidden">
+    <div className="min-h-dvh lg:h-dvh bg-vault-canvas text-vault-body flex lg:overflow-hidden">
       <Sidebar
         user={user}
         tabs={tabs}
         activeTabId={activeTabId}
+        mobileOpen={mobileMenuOpen}
+        onCloseMobile={() => setMobileMenuOpen(false)}
         onSelectTab={setActiveTabId}
         onOpenCreateTab={() => setShowCreateTab(true)}
         onOpenAdmin={() => setShowAdminModal(true)}
@@ -250,6 +257,7 @@ export function App() {
             }
             onOpenShare={() => setShowShareModal(true)}
             onDeleteTab={() => handleDeleteTab(activeTab)}
+            onOpenMobileMenu={() => setMobileMenuOpen(true)}
             onNotify={notify}
           />
         ) : (
@@ -266,35 +274,55 @@ export function App() {
             }
             onOpenShare={() => setShowShareModal(true)}
             onDeleteTab={() => handleDeleteTab(activeTab)}
+            onOpenMobileMenu={() => setMobileMenuOpen(true)}
             onNotify={notify}
           />
         )
       ) : (
-        <main className="flex-1 flex items-center justify-center p-8">
-          <div className="max-w-md text-center space-y-4">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-vault-emerald/14 border border-vault-emerald/30 text-vault-emerald">
-              <FolderLock className="h-7 w-7" />
+        <div className="flex-1 flex flex-col min-h-dvh lg:min-h-0">
+          {/* Mobile top bar when no tabs exist yet */}
+          <header className="lg:hidden px-4 py-3 border-b border-vault-stone/16 bg-vault-canvas flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-vault-emerald" />
+              <span className="text-sm font-semibold text-vault-ivory">Documents Vault</span>
             </div>
-            <h2 className="text-xl font-semibold text-vault-ivory tracking-tight">
-              Seu Cofre Está Pronto
-            </h2>
-            <p className="text-sm text-vault-muted leading-relaxed">
-              Crie sua primeira aba para guardar{' '}
-              <strong className="text-vault-ivory">documentos pessoais criptografados</strong>{' '}
-              (PDFs, recibos, notas) ou montar{' '}
-              <strong className="text-vault-ivory">tabelas estruturadas</strong> (controle
-              financeiro, contas e investimentos).
-            </p>
             <button
               type="button"
-              onClick={() => setShowCreateTab(true)}
-              className="inline-flex items-center gap-2 rounded-xl bg-vault-ivory px-5 py-2.5 text-sm font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Abrir menu de abas"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/25 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-ivory hover:bg-vault-hover transition cursor-pointer"
             >
-              <Plus className="h-4 w-4" />
-              Criar Primeira Aba
+              <span>Abas</span>
+              <PanelRightOpen className="h-4 w-4 text-vault-stone" />
             </button>
-          </div>
-        </main>
+          </header>
+
+          <main className="flex-1 flex items-center justify-center p-6 sm:p-8">
+            <div className="max-w-md text-center space-y-4">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-vault-emerald/14 border border-vault-emerald/30 text-vault-emerald">
+                <FolderLock className="h-7 w-7" />
+              </div>
+              <h2 className="text-xl font-semibold text-vault-ivory tracking-tight">
+                Seu Cofre Está Pronto
+              </h2>
+              <p className="text-sm text-vault-muted leading-relaxed">
+                Crie sua primeira aba para guardar{' '}
+                <strong className="text-vault-ivory">documentos pessoais criptografados</strong>{' '}
+                (PDFs, recibos, notas) ou montar{' '}
+                <strong className="text-vault-ivory">tabelas estruturadas</strong> (controle
+                financeiro, contas e investimentos).
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowCreateTab(true)}
+                className="inline-flex items-center gap-2 rounded-xl bg-vault-ivory px-5 py-2.5 text-sm font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
+              >
+                <Plus className="h-4 w-4" />
+                Criar Primeira Aba
+              </button>
+            </div>
+          </main>
+        </div>
       )}
 
       {showCreateTab && (
@@ -339,7 +367,7 @@ export function App() {
 
       {toast && (
         <div
-          className={`fixed bottom-5 right-5 z-50 rounded-xl border px-4 py-2.5 text-xs font-medium shadow-xl ${
+          className={`fixed bottom-4 left-4 right-4 sm:left-auto sm:right-5 sm:bottom-5 z-50 rounded-xl border px-4 py-2.5 text-xs font-medium shadow-xl ${
             toast.tone === 'err'
               ? 'border-vault-danger/45 bg-vault-deep text-vault-danger'
               : 'border-vault-emerald/40 bg-vault-surface text-vault-ivory'

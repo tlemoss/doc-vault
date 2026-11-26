@@ -282,8 +282,8 @@ export function AuthScreen({
 
   if (pendingRecovery) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-vault-canvas p-4">
-        <div className="w-full max-w-lg rounded-2xl border border-vault-warning/40 bg-vault-surface p-7 shadow-2xl">
+      <div className="min-h-dvh flex items-center justify-center bg-vault-canvas p-4 py-6">
+        <div className="w-full max-w-lg rounded-2xl border border-vault-warning/40 bg-vault-surface p-5 sm:p-7 shadow-2xl">
           <div className="flex items-center gap-3 text-vault-warning mb-4">
             <AlertTriangle className="h-7 w-7 shrink-0" />
             <div>
@@ -368,8 +368,8 @@ export function AuthScreen({
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-vault-canvas p-4">
-      <div className="w-full max-w-md rounded-2xl border border-vault-stone/25 bg-vault-surface p-7 shadow-2xl">
+    <div className="min-h-dvh flex items-center justify-center bg-vault-canvas p-4 py-6">
+      <div className="w-full max-w-md rounded-2xl border border-vault-stone/25 bg-vault-surface p-5 sm:p-7 shadow-2xl">
         <div className="flex items-center gap-3.5 mb-6">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-vault-emerald/15 border border-vault-emerald/35 text-vault-emerald">
             <ShieldCheck className="h-6 w-6" />

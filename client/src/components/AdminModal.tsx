@@ -128,8 +128,8 @@ export function AdminModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
-      <div className="w-full max-w-3xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-3 sm:p-4">
+      <div className="w-full max-w-3xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-5 sm:p-6 shadow-2xl max-h-[92dvh] flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2.5">
             <Shield className="h-5 w-5 text-vault-emerald" />

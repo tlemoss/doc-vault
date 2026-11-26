@@ -76,8 +76,8 @@ export function CreateTabModal({ onClose, onCreate }: CreateTabModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-3 sm:p-4">
+      <div className="w-full max-w-md max-h-[92dvh] overflow-y-auto rounded-2xl border border-vault-stone/30 bg-vault-surface p-5 sm:p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-vault-ivory tracking-tight">
             Nova Aba Criptografada

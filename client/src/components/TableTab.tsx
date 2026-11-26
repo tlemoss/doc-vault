@@ -7,9 +7,11 @@ import {
   Columns3,
   Download,
   Lock,
+  PanelRightOpen,
   Plus,
   Search,
   Share2,
+  Smartphone,
   Trash2,
   X,
 } from 'lucide-react';
@@ -32,6 +34,7 @@ interface TableTabProps {
   onQuotaChanged: (usedBytes: number) => void;
   onOpenShare: () => void;
   onDeleteTab: () => void;
+  onOpenMobileMenu: () => void;
   onNotify: (msg: string, tone?: 'ok' | 'err') => void;
 }
 
@@ -58,6 +61,7 @@ export function TableTab({
   onQuotaChanged,
   onOpenShare,
   onDeleteTab,
+  onOpenMobileMenu,
   onNotify,
 }: TableTabProps) {
   const canEdit = tab.role === 'owner' || tab.role === 'editor';
@@ -336,27 +340,40 @@ export function TableTab({
   );
 
   return (
-    <div className="flex-1 flex flex-col h-screen overflow-hidden bg-vault-canvas">
+    <div className="flex-1 min-w-0 flex flex-col min-h-dvh lg:h-dvh lg:overflow-hidden bg-vault-canvas">
       {/* Header */}
-      <header className="px-6 py-4 border-b border-vault-stone/16 bg-vault-canvas flex flex-wrap items-center justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-xl font-semibold text-vault-ivory tracking-tight truncate">
-              {tab.meta.title}
-            </h1>
-            <span className="inline-flex items-center gap-1 rounded-full bg-vault-emerald/14 border border-vault-emerald/35 px-2.5 py-0.5 text-[11px] font-medium text-vault-emerald tabular-nums">
-              <Lock className="h-3 w-3" />
-              AES-256 · v{tab.keyVersion}
-            </span>
-            {tab.role === 'viewer' && (
-              <span className="rounded-full border border-vault-stone/20 bg-vault-surface px-2.5 py-0.5 text-[11px] text-vault-muted">
-                Somente leitura
+      <header className="landscape-compact-header px-4 py-3 sm:px-6 sm:py-4 border-b border-vault-stone/16 bg-vault-canvas flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex items-start justify-between gap-3 min-w-0">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-lg sm:text-xl font-semibold text-vault-ivory tracking-tight truncate">
+                {tab.meta.title}
+              </h1>
+              <span className="inline-flex items-center gap-1 rounded-full bg-vault-emerald/14 border border-vault-emerald/35 px-2 py-0.5 text-[11px] font-medium text-vault-emerald tabular-nums">
+                <Lock className="h-3 w-3" />
+                AES-256 · v{tab.keyVersion}
               </span>
+              {tab.role === 'viewer' && (
+                <span className="rounded-full border border-vault-stone/20 bg-vault-surface px-2 py-0.5 text-[11px] text-vault-muted">
+                  Leitura
+                </span>
+              )}
+            </div>
+            {tab.meta.description && (
+              <p className="text-xs text-vault-muted mt-0.5 truncate">{tab.meta.description}</p>
             )}
           </div>
-          {tab.meta.description && (
-            <p className="text-xs text-vault-muted mt-0.5 truncate">{tab.meta.description}</p>
-          )}
+
+          {/* Right-side collapsible drawer toggle on mobile/landscape (< lg) */}
+          <button
+            type="button"
+            onClick={onOpenMobileMenu}
+            aria-label="Abrir abas do cofre"
+            className="lg:hidden shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/25 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-ivory hover:bg-vault-hover transition cursor-pointer"
+          >
+            <span className="hidden sm:inline">Abas</span>
+            <PanelRightOpen className="h-4 w-4 text-vault-stone" />
+          </button>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -365,10 +382,10 @@ export function TableTab({
               <button
                 type="button"
                 onClick={openNewRow}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-vault-ivory px-3.5 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-vault-ivory px-3 sm:px-3.5 py-2 text-xs font-semibold text-vault-canvas hover:bg-vault-stone transition cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
-                Novo Registro
+                <span>Novo Registro</span>
               </button>
               <button
                 type="button"
@@ -377,28 +394,28 @@ export function TableTab({
                     schema.columns.map((c) => ({ ...c, options: [...(c.options ?? [])] }))
                   )
                 }
-                className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-2.5 sm:px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
               >
                 <Columns3 className="h-4 w-4" />
-                Colunas
+                <span>Colunas</span>
               </button>
             </>
           )}
           <button
             type="button"
             onClick={exportCsv}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-2.5 sm:px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer"
           >
             <Download className="h-4 w-4" />
-            CSV
+            <span>CSV</span>
           </button>
           <button
             type="button"
             onClick={onOpenShare}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer tabular-nums"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-vault-stone/22 bg-vault-surface px-2.5 sm:px-3 py-2 text-xs font-medium text-vault-stone hover:bg-vault-hover transition cursor-pointer tabular-nums"
           >
             <Share2 className="h-4 w-4" />
-            Acesso ({tab.memberCount})
+            <span>Acesso ({tab.memberCount})</span>
           </button>
           {isOwner && (
             <button
@@ -413,9 +430,9 @@ export function TableTab({
         </div>
       </header>
 
-      {/* Live Numeric/Financial Summary Bar */}
-      <div className="px-6 py-3.5 border-b border-vault-stone/14 bg-vault-canvas flex flex-wrap items-center gap-3">
-        <div className="rounded-xl border border-vault-stone/16 bg-vault-surface px-4 py-2.5">
+      {/* Live Numeric/Financial Summary Bar (single-row swipe strip on mobile/landscape) */}
+      <div className="landscape-compact-bar px-4 py-2.5 sm:px-6 sm:py-3.5 border-b border-vault-stone/14 bg-vault-canvas flex items-stretch gap-2.5 overflow-x-auto sm:flex-wrap">
+        <div className="shrink-0 rounded-xl border border-vault-stone/16 bg-vault-surface px-3.5 py-2">
           <div className="text-[10px] uppercase tracking-[0.14em] text-vault-muted">
             Registros
           </div>
@@ -430,12 +447,12 @@ export function TableTab({
         {numericSummaries.map(({ col, sum, avg }) => (
           <div
             key={col.id}
-            className="rounded-xl border border-vault-stone/16 bg-vault-surface px-4 py-2.5"
+            className="shrink-0 rounded-xl border border-vault-stone/16 bg-vault-surface px-3.5 py-2"
           >
             <div className="text-[10px] uppercase tracking-[0.14em] text-vault-muted">
               Total · {col.name}
             </div>
-            <div className="flex items-baseline gap-2.5 mt-0.5">
+            <div className="flex items-baseline gap-2 mt-0.5">
               <span
                 className={`text-sm font-semibold tabular-nums ${
                   sum < 0 ? 'text-vault-danger' : 'text-vault-ivory'
@@ -457,8 +474,8 @@ export function TableTab({
       </div>
 
       {/* Search & Column Filters */}
-      <div className="px-6 py-3 border-b border-vault-stone/14 bg-vault-deep/45 flex flex-wrap items-center gap-2.5">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="landscape-compact-bar px-4 py-2.5 sm:px-6 sm:py-3 border-b border-vault-stone/14 bg-vault-deep/45 flex flex-wrap items-center gap-2">
+        <div className="relative flex-1 min-w-[170px]">
           <Search className="h-4 w-4 text-vault-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
@@ -476,7 +493,7 @@ export function TableTab({
             onChange={(e) =>
               setColumnFilters((prev) => ({ ...prev, [col.id]: e.target.value }))
             }
-            className="rounded-xl border border-vault-stone/20 bg-vault-deep px-3 py-1.5 text-xs text-vault-stone focus:border-vault-stone/50 focus:outline-none"
+            className="rounded-xl border border-vault-stone/20 bg-vault-deep px-2.5 sm:px-3 py-1.5 text-xs text-vault-stone focus:border-vault-stone/50 focus:outline-none"
           >
             <option value="">{col.name}: Todos</option>
             {col.type === 'checkbox' ? (
@@ -507,7 +524,15 @@ export function TableTab({
       </div>
 
       {/* Data Table */}
-      <div className="flex-1 overflow-auto p-6">
+      <div className="landscape-compact-content flex-1 lg:overflow-auto p-4 sm:p-6 space-y-2.5">
+        {/* Helpful portrait hint that auto-hides in landscape (>= sm / 640px) */}
+        {schema.columns.length > 3 && (
+          <div className="sm:hidden flex items-center gap-2 rounded-xl border border-vault-stone/16 bg-vault-surface/70 px-3 py-2 text-[11px] text-vault-muted">
+            <Smartphone className="h-3.5 w-3.5 text-vault-stone rotate-90 shrink-0" />
+            <span>Deslize a tabela lateralmente ou gire o celular para ver todas as colunas.</span>
+          </div>
+        )}
+
         {loading ? (
           <div className="py-16 text-center text-sm text-vault-muted">
             Descriptografando registros da tabela...
@@ -515,10 +540,10 @@ export function TableTab({
         ) : (
           <div className="rounded-2xl border border-vault-stone/18 bg-vault-surface overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
-              <thead>
-                <tr className="border-b border-vault-stone/16 bg-vault-deep/65 text-vault-muted">
+              <thead className="sticky top-0 z-10">
+                <tr className="border-b border-vault-stone/16 bg-vault-deep text-vault-muted">
                   {canEdit && (
-                    <th className="w-10 px-3 py-3">
+                    <th className="w-9 px-2.5 sm:px-3 py-2.5 sm:py-3">
                       <input
                         type="checkbox"
                         checked={
@@ -540,7 +565,7 @@ export function TableTab({
                     <th
                       key={col.id}
                       onClick={() => toggleSort(col.id)}
-                      className="px-4 py-3 font-medium uppercase tracking-[0.12em] text-[10px] cursor-pointer hover:text-vault-ivory select-none whitespace-nowrap"
+                      className="px-3 sm:px-4 py-2.5 sm:py-3 font-medium uppercase tracking-[0.12em] text-[10px] cursor-pointer hover:text-vault-ivory select-none whitespace-nowrap"
                     >
                       <span className="inline-flex items-center gap-1">
                         {col.name}
@@ -557,7 +582,7 @@ export function TableTab({
                     </th>
                   ))}
                   {canEdit && (
-                    <th className="w-20 px-3 py-3 text-right font-medium uppercase tracking-[0.12em] text-[10px]">
+                    <th className="w-16 sm:w-20 px-2.5 sm:px-3 py-2.5 sm:py-3 text-right font-medium uppercase tracking-[0.12em] text-[10px]">
                       Ações
                     </th>
                   )}
@@ -569,7 +594,7 @@ export function TableTab({
                   <tr>
                     <td
                       colSpan={schema.columns.length + (canEdit ? 2 : 0)}
-                      className="px-6 py-12 text-center text-vault-muted"
+                      className="px-6 py-10 text-center text-vault-muted"
                     >
                       {rows.length === 0
                         ? 'Nenhum registro ainda. Clique em "Novo Registro" para lançar dados criptografados.'
@@ -583,7 +608,7 @@ export function TableTab({
                       className="hover:bg-vault-hover/75 transition group"
                     >
                       {canEdit && (
-                        <td className="px-3 py-3">
+                        <td className="px-2.5 sm:px-3 py-2.5 sm:py-3">
                           <input
                             type="checkbox"
                             checked={selectedIds.has(row.id)}
@@ -610,7 +635,7 @@ export function TableTab({
                                 setRowModal({ id: row.id, values: { ...row.values } });
                               }
                             }}
-                            className={`px-4 py-3 whitespace-nowrap ${
+                            className={`px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap ${
                               canEdit && col.type !== 'checkbox' ? 'cursor-pointer' : ''
                             }`}
                           >
@@ -663,12 +688,12 @@ export function TableTab({
                       })}
 
                       {canEdit && (
-                        <td className="px-3 py-3 text-right whitespace-nowrap">
+                        <td className="px-2.5 sm:px-3 py-2.5 sm:py-3 text-right whitespace-nowrap">
                           <button
                             type="button"
                             onClick={() => handleDeleteRow(row.id)}
                             title="Excluir linha"
-                            className="rounded-lg p-1 text-vault-muted hover:bg-vault-danger/12 hover:text-vault-danger transition cursor-pointer"
+                            className="rounded-lg p-1.5 sm:p-1 text-vault-muted hover:bg-vault-danger/12 hover:text-vault-danger transition cursor-pointer"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
@@ -683,10 +708,10 @@ export function TableTab({
         )}
       </div>
 
-      {/* Row Create/Edit Modal */}
+      {/* Row Create/Edit Modal (2-column grid in landscape/tablet for minimal scrolling) */}
       {rowModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-3 sm:p-4">
+          <div className="w-full max-w-xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-5 sm:p-6 shadow-2xl max-h-[92dvh] overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-semibold text-vault-ivory">
                 {rowModal.id ? 'Editar Registro' : 'Novo Registro Criptografado'}
@@ -700,98 +725,103 @@ export function TableTab({
               </button>
             </div>
 
-            <form onSubmit={handleSaveRow} className="space-y-3.5">
-              {schema.columns.map((col) => {
-                const val = rowModal.values[col.id];
-                return (
-                  <div key={col.id}>
-                    <label className="block text-xs font-medium text-vault-stone mb-1">
-                      {col.name}{' '}
-                      <span className="text-[10px] text-vault-muted">
-                        ({COLUMN_TYPE_LABELS[col.type]}
-                        {col.type === 'currency' ? ` ${col.currency ?? 'BRL'}` : ''})
-                      </span>
-                    </label>
+            <form onSubmit={handleSaveRow} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {schema.columns.map((col) => {
+                  const val = rowModal.values[col.id];
+                  return (
+                    <div
+                      key={col.id}
+                      className={col.type === 'text' ? 'sm:col-span-2' : ''}
+                    >
+                      <label className="block text-xs font-medium text-vault-stone mb-1">
+                        {col.name}{' '}
+                        <span className="text-[10px] text-vault-muted">
+                          ({COLUMN_TYPE_LABELS[col.type]}
+                          {col.type === 'currency' ? ` ${col.currency ?? 'BRL'}` : ''})
+                        </span>
+                      </label>
 
-                    {col.type === 'checkbox' ? (
-                      <label className="inline-flex items-center gap-2 text-xs text-vault-body cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(val)}
+                      {col.type === 'checkbox' ? (
+                        <label className="inline-flex items-center gap-2 text-xs text-vault-body py-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(val)}
+                            onChange={(e) =>
+                              setRowModal({
+                                ...rowModal,
+                                values: { ...rowModal.values, [col.id]: e.target.checked },
+                              })
+                            }
+                            className="rounded border-vault-stone/30 bg-vault-deep accent-vault-emerald"
+                          />
+                          Marcado
+                        </label>
+                      ) : col.type === 'select' ? (
+                        <select
+                          value={String(val ?? '')}
                           onChange={(e) =>
                             setRowModal({
                               ...rowModal,
-                              values: { ...rowModal.values, [col.id]: e.target.checked },
+                              values: { ...rowModal.values, [col.id]: e.target.value },
                             })
                           }
-                          className="rounded border-vault-stone/30 bg-vault-deep accent-vault-emerald"
+                          className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
+                        >
+                          <option value="">— Selecione —</option>
+                          {(col.options ?? []).map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                      ) : col.type === 'number' || col.type === 'currency' ? (
+                        <input
+                          type="number"
+                          step="any"
+                          value={val === null || val === undefined ? '' : String(val)}
+                          onChange={(e) =>
+                            setRowModal({
+                              ...rowModal,
+                              values: {
+                                ...rowModal.values,
+                                [col.id]: e.target.value === '' ? 0 : Number(e.target.value),
+                              },
+                            })
+                          }
+                          className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm font-mono tabular-nums text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                         />
-                        Marcado
-                      </label>
-                    ) : col.type === 'select' ? (
-                      <select
-                        value={String(val ?? '')}
-                        onChange={(e) =>
-                          setRowModal({
-                            ...rowModal,
-                            values: { ...rowModal.values, [col.id]: e.target.value },
-                          })
-                        }
-                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
-                      >
-                        <option value="">— Selecione —</option>
-                        {(col.options ?? []).map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
-                          </option>
-                        ))}
-                      </select>
-                    ) : col.type === 'number' || col.type === 'currency' ? (
-                      <input
-                        type="number"
-                        step="any"
-                        value={val === null || val === undefined ? '' : String(val)}
-                        onChange={(e) =>
-                          setRowModal({
-                            ...rowModal,
-                            values: {
-                              ...rowModal.values,
-                              [col.id]: e.target.value === '' ? 0 : Number(e.target.value),
-                            },
-                          })
-                        }
-                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm font-mono tabular-nums text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
-                      />
-                    ) : col.type === 'date' ? (
-                      <input
-                        type="date"
-                        value={String(val ?? '')}
-                        onChange={(e) =>
-                          setRowModal({
-                            ...rowModal,
-                            values: { ...rowModal.values, [col.id]: e.target.value },
-                          })
-                        }
-                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        value={String(val ?? '')}
-                        onChange={(e) =>
-                          setRowModal({
-                            ...rowModal,
-                            values: { ...rowModal.values, [col.id]: e.target.value },
-                          })
-                        }
-                        className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
-                      />
-                    )}
-                  </div>
-                );
-              })}
+                      ) : col.type === 'date' ? (
+                        <input
+                          type="date"
+                          value={String(val ?? '')}
+                          onChange={(e) =>
+                            setRowModal({
+                              ...rowModal,
+                              values: { ...rowModal.values, [col.id]: e.target.value },
+                            })
+                          }
+                          className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={String(val ?? '')}
+                          onChange={(e) =>
+                            setRowModal({
+                              ...rowModal,
+                              values: { ...rowModal.values, [col.id]: e.target.value },
+                            })
+                          }
+                          className="w-full rounded-xl border border-vault-stone/22 bg-vault-deep px-3 py-2 text-sm text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
 
-              <div className="flex justify-end gap-2 pt-3">
+              <div className="flex justify-end gap-2 pt-3 border-t border-vault-stone/14">
                 <button
                   type="button"
                   onClick={() => setRowModal(null)}
@@ -814,8 +844,8 @@ export function TableTab({
 
       {/* Column Schema Editor Modal */}
       {schemaModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-4">
-          <div className="w-full max-w-2xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-6 shadow-2xl max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-vault-deep/80 backdrop-blur-xs p-3 sm:p-4">
+          <div className="w-full max-w-2xl rounded-2xl border border-vault-stone/30 bg-vault-surface p-5 sm:p-6 shadow-2xl max-h-[92dvh] flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h2 className="text-base font-semibold text-vault-ivory">
@@ -850,7 +880,7 @@ export function TableTab({
                         setSchemaModal(next);
                       }}
                       placeholder="Nome da coluna"
-                      className="flex-1 min-w-[140px] rounded-lg border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
+                      className="flex-1 min-w-[130px] rounded-lg border border-vault-stone/22 bg-vault-canvas px-3 py-1.5 text-xs text-vault-ivory focus:border-vault-stone/60 focus:outline-none"
                     />
                     <select
                       value={col.type}
@@ -895,39 +925,41 @@ export function TableTab({
                       </select>
                     )}
 
-                    <button
-                      type="button"
-                      disabled={idx === 0}
-                      onClick={() => {
-                        const next = [...schemaModal];
-                        [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
-                        setSchemaModal(next);
-                      }}
-                      className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory disabled:opacity-30 cursor-pointer"
-                    >
-                      <ArrowUp className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      disabled={idx === schemaModal.length - 1}
-                      onClick={() => {
-                        const next = [...schemaModal];
-                        [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
-                        setSchemaModal(next);
-                      }}
-                      className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory disabled:opacity-30 cursor-pointer"
-                    >
-                      <ArrowDown className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSchemaModal(schemaModal.filter((c) => c.id !== col.id))
-                      }
-                      className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:text-vault-danger hover:bg-vault-danger/12 cursor-pointer"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => {
+                          const next = [...schemaModal];
+                          [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
+                          setSchemaModal(next);
+                        }}
+                        className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory disabled:opacity-30 cursor-pointer"
+                      >
+                        <ArrowUp className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === schemaModal.length - 1}
+                        onClick={() => {
+                          const next = [...schemaModal];
+                          [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
+                          setSchemaModal(next);
+                        }}
+                        className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:bg-vault-hover hover:text-vault-ivory disabled:opacity-30 cursor-pointer"
+                      >
+                        <ArrowDown className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSchemaModal(schemaModal.filter((c) => c.id !== col.id))
+                        }
+                        className="rounded-lg border border-vault-stone/18 p-1.5 text-vault-muted hover:text-vault-danger hover:bg-vault-danger/12 cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   {col.type === 'select' && (
